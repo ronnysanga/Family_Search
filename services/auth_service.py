@@ -1,5 +1,6 @@
 from database import create_connection, close_connection
 from utils.console_utils import show_message
+from .person_service import add_person
 
 def register_user(user_data):
     """
@@ -30,7 +31,19 @@ def register_user(user_data):
         ))
         connection.commit()
         user_id = cursor.lastrowid
-        show_message("Usuario registrado exitosamente.", "success")
+        
+        # Crear automáticamente un perfil de persona para el usuario
+        person_data = {
+            'nombres': user_data['nombres'],
+            'apellidos': user_data['apellidos'],
+            'sexo': user_data.get('sexo', 'masculino'),  # Usar el sexo proporcionado o 'masculino' por defecto
+            'biografia': 'Perfil creado automáticamente al registrarse.'
+        }
+        
+        if not add_person(person_data, user_id):
+            show_message("Usuario registrado, pero hubo un error al crear el perfil de persona.", "warning")
+        
+        show_message("Usuario registrado exitosamente. Se ha creado su perfil de persona.", "success")
         return user_id
         
     except Exception as e:

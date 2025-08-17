@@ -123,3 +123,100 @@ def add_person(person_data, user_id):
     finally:
         cursor.close()
         close_connection(connection)
+
+def edit_person(person_id, person_data, user_id):
+    """
+    Edit an existing person's information.
+    
+    Args:
+        person_id (int): ID of the person to edit
+        person_data (dict): Dictionary containing updated person data
+        user_id (int): ID of the user making the edit
+        
+    Returns:
+        bool: True if update was successful, False otherwise
+    """
+    connection = create_connection()
+    if not connection:
+        show_message("Error al conectar a la base de datos.", "error")
+        return False
+    
+    try:
+        cursor = connection.cursor()
+        
+        # Primero, verificar si la persona existe y el usuario tiene permisos
+        cursor.execute(
+            "SELECT id_persona FROM persona WHERE id_persona = %s AND id_usuario_creador = %s",
+            (person_id, user_id)
+        )
+        if not cursor.fetchone():
+            show_message("Persona no encontrada o no tiene permisos para editarla.", "error")
+            return False
+        
+        # Construir la consulta dinámicamente basada en los campos proporcionados
+        update_fields = []
+        values = []
+        
+        if 'nombres' in person_data:
+            update_fields.append("nombres = %s")
+            values.append(person_data['nombres'])
+            
+        if 'apellidos' in person_data:
+            update_fields.append("apellidos = %s")
+            values.append(person_data['apellidos'])
+            
+        if 'fecha_nacimiento' in person_data:
+            update_fields.append("fecha_nacimiento = %s")
+            values.append(person_data['fecha_nacimiento'])
+            
+        if 'fecha_defuncion' in person_data:
+            update_fields.append("fecha_defuncion = %s")
+            values.append(person_data['fecha_defuncion'])
+            
+        if 'sexo' in person_data:
+            update_fields.append("sexo = %s")
+            values.append(person_data['sexo'])
+            
+        if 'lugar_nacimiento' in person_data:
+            update_fields.append("lugar_nacimiento = %s")
+            values.append(person_data['lugar_nacimiento'])
+            
+        if 'lugar_defuncion' in person_data:
+            update_fields.append("lugar_defuncion = %s")
+            values.append(person_data['lugar_defuncion'])
+            
+        if 'biografia' in person_data:
+            update_fields.append("biografia = %s")
+            values.append(person_data['biografia'])
+        
+        if not update_fields:
+            show_message("No se proporcionaron datos para actualizar.", "warning")
+            return False
+            
+        # Agregar el ID de la persona al final de los valores
+        values.append(person_id)
+        
+        # Construir y ejecutar la consulta
+        query = f"""
+        UPDATE persona 
+        SET {', '.join(update_fields)}, fecha_actualizacion = CURRENT_TIMESTAMP
+        WHERE id_persona = %s
+        """
+        
+        cursor.execute(query, values)
+        connection.commit()
+        
+        if cursor.rowcount > 0:
+            show_message("Información de la persona actualizada exitosamente.", "success")
+            return True
+        else:
+            show_message("No se pudo actualizar la información de la persona.", "error")
+            return False
+            
+    except Exception as e:
+        show_message(f"Error al actualizar la persona: {e}", "error")
+        return False
+        
+    finally:
+        cursor.close()
+        close_connection(connection)

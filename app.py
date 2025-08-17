@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from views.auth_views import show_register_form, show_login_form
 from views.person_views import show_profile, show_search_people, show_add_person_form
 from views.menu_views import show_main_menu, show_logged_in_menu
+from views.family_tree_views import show_family_tree_menu
 
 def main():
     """Main function to start the application."""
@@ -41,20 +42,11 @@ def main():
                 
         else:
             # Show menu for authenticated users
-            choice = show_logged_in_menu(current_user['id_usuario'])
+            result = show_logged_in_menu(current_user['id_usuario'])
             
-            if choice == '1':  # View profile
-                show_profile(current_user['id_usuario'])
-                
-            elif choice == '2':  # Search people
-                show_search_people()
-                
-            elif choice == '3':  # Add person
-                show_add_person_form(current_user['id_usuario'])
-                
-            elif choice == '4':  # Logout
+            # Si el resultado es 'logout', cerramos la sesión
+            if result == 'logout':
                 current_user = None
-                print("\nSesión cerrada exitosamente.")
                 input("Presione Enter para continuar...")
 
 if __name__ == "__main__":
