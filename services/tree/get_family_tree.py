@@ -1,10 +1,8 @@
-from typing import Dict
-
+from typing import Dict, Any
 from ..person import get_person_by_id
 from ..relationship import get_relationships
-from utils.console_utils import show_message
 
-def get_family_tree(person_id: int, max_depth: int = 3, current_depth: int = 0) -> Dict:
+def get_family_tree(person_id: int, max_depth: int = 3, current_depth: int = 0) -> Dict[str, Any]:
     if current_depth >= max_depth:
         return {}
         
@@ -45,29 +43,3 @@ def get_family_tree(person_id: int, max_depth: int = 3, current_depth: int = 0) 
         tree['relationships'][rel_type].append(person_data)
     
     return tree
-
-def print_family_tree(person_id: int, max_depth: int = 3):
-    """Print a text-based representation of the family tree"""
-    def _print_node(node, level=0, prefix=''):
-        if not node:
-            return
-            
-        # Print person's name
-        indent = '    ' * level
-        print(f"{indent}{prefix}{node['name']}")
-        
-        # Print relationships if any
-        if 'relationships' in node:
-            for rel_type, people in node['relationships'].items():
-                print(f"{indent}  ├─ {rel_type.upper()}:")
-                for i, person in enumerate(people, 1):
-                    is_last = i == len(people)
-                    new_prefix = '└─ ' if is_last else '├─ '
-                    _print_node(person, level + 1, new_prefix)
-    
-    # Start building the tree from the root person
-    tree = get_family_tree(person_id, max_depth)
-    if tree:
-        _print_node(tree)
-    else:
-        show_message("No se pudo generar el árbol genealógico.", "error")

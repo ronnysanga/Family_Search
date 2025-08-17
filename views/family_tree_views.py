@@ -1,13 +1,9 @@
-"""
-Family Tree Views Module
-
-This module provides the user interface for managing and visualizing family trees.
-"""
 from typing import Dict, List, Optional, Callable, Any
-from services.family_tree_service import (
-    create_person, search_people, get_person_by_id,
-    add_relationship, print_family_tree, get_relationships
-)
+from services.person.create import create_person
+from services.person.search import search_people
+from services.person import get_person_by_id
+from services.relationship import add_relationship, get_relationships
+from services.tree import print_family_tree
 from utils.console_utils import (
     show_header, show_message, get_input,
     clear_screen, show_menu

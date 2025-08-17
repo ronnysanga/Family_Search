@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from services.family_tree.tree_service import print_family_tree
+from services.tree import print_family_tree
 from utils.console_utils import show_header, get_input, clear_screen
 from ..person.search_views import search_and_select_person
 
