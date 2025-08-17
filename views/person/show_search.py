@@ -1,7 +1,6 @@
 from typing import List, Dict, Any, Optional
 from utils.console_utils import show_header, show_message, get_input, clear_screen
 from services.person.search import search_people
-from ..family_tree import show_family_tree
 
 def show_search() -> None:
     while True:
@@ -100,22 +99,26 @@ def _handle_person_selection(person: Dict[str, Any]) -> None:
     """
     while True:
         clear_screen()
-        show_header(f"Opciones para {person['nombres']} {person['apellidos']}")
+        show_header(f"Perfil de {person['nombres']} {person['apellidos']}")
         
-        print("\nSeleccione una opción:")
-        print("1. Ver perfil")
-        print("2. Ver árbol genealógico")
-        print("3. Volver a resultados")
+        # Display basic info
+        print(f"\nNombres: {person['nombres']}")
+        print(f"Apellidos: {person['apellidos']}")
         
-        choice = input("\nOpción: ").strip()
+        if 'fecha_nacimiento' in person and person['fecha_nacimiento']:
+            print(f"Fecha de Nacimiento: {person['fecha_nacimiento']}")
+            
+        print("\nOpciones:")
+        print("1. Ver perfil completo")
+        print("2. Volver a resultados")
+        
+        choice = input("\nSeleccione una opción: ").strip()
         
         if choice == '1':
-            from .show_profile import show_profile
-            show_profile(person['id_persona'])
+            from ..person import show_profile
+            show_profile(None, person['id_persona'])
         elif choice == '2':
-            show_family_tree(person['id_persona'])
-        elif choice == '3':
-            return
+            break
         else:
             show_message("Opción no válida. Intente nuevamente.", "error")
             input("Presione ENTER para continuar...")

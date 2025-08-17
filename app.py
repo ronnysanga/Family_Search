@@ -6,7 +6,6 @@ from views.auth.show_register_form import show_register_form
 from views.menus.show_main_menu import show_main_menu
 from views.menus.show_logged_in_menu import show_logged_in_menu
 from views.person import show_profile, show_add_form, show_edit_form, show_search, select_person
-from views.family_tree import show_family_tree, show_add_relationship
 
 def handle_logged_in_choice(choice: str, user_id: int) -> str:
     """Handle user's choice from the logged-in menu."""
@@ -20,11 +19,7 @@ def handle_logged_in_choice(choice: str, user_id: int) -> str:
         person = select_person("Seleccione la persona a editar")
         if person:
             show_edit_form(person, user_id)
-    elif choice == '5':  # View family tree
-        show_family_tree()
-    elif choice == '6':  # Add relationship
-        show_add_relationship(user_id)
-    elif choice == '7':  # Logout
+    elif choice == '5':  # Logout
         return 'logout'
         
     return ''

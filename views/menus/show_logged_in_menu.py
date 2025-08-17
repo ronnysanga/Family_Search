@@ -7,9 +7,7 @@ def show_logged_in_menu(user_id: int) -> str:
         '2': 'Buscar personas',
         '3': 'Agregar persona',
         '4': 'Editar persona',
-        '5': 'Ver árbol genealógico',
-        '6': 'Agregar relación familiar',
-        '7': 'Cerrar sesión'
+        '5': 'Cerrar sesión'
     }
     
     while True:
@@ -22,7 +20,7 @@ def show_logged_in_menu(user_id: int) -> str:
             
         choice = get_input("\nSeleccione una opción: ").strip()
         
-        if choice == '7':  # Logout
+        if choice == '5':  # Logout
             confirm = input("\n¿Está seguro que desea cerrar sesión? (s/n): ").strip().lower()
             if confirm == 's':
                 show_message("Sesión cerrada exitosamente.", "success")

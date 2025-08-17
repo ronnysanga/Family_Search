@@ -1,6 +1,5 @@
 from utils.console_utils import show_header, get_input, clear_screen, show_message
 from .person import show_edit_person_form, show_profile, show_search_people, show_add_person_form
-from .family_tree import show_family_tree_menu
 
 def show_main_menu():
     """Display the main menu and handle user input."""

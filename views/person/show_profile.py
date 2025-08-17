@@ -1,7 +1,6 @@
 from typing import Optional, Dict, Any
 from utils.console_utils import show_header, show_message, get_input, clear_screen
 from services.person import get_person_by_id
-from ..family_tree import show_family_tree
 
 def show_profile(user_id: int, person_id: Optional[int] = None) -> None:
     """
@@ -56,29 +55,17 @@ def show_profile(user_id: int, person_id: Optional[int] = None) -> None:
         print("\nOpciones:")
         if str(person_id) == str(user_id):
             print("1. Editar perfil")
-        print("2. Ver árbol genealógico")
-        print("3. Ver biografía")
-        print("4. Volver al menú principal")
+        print("2. Volver al menú principal")
         
-        choice = get_input("\nSeleccione una opción: ").strip()
+        choice = get_input("\nSeleccione una opción: ")
         
         if choice == '1' and str(person_id) == str(user_id):
-            from .show_edit_form import show_edit_form
-            show_edit_form(person, user_id)
+            from .edit_views import show_edit_person_form
+            show_edit_person_form(person, user_id)
             # Refresh person data after editing
             person = get_person_by_id(person_id)
         elif choice == '2':
-            show_family_tree(person_id)
-        elif choice == '3':
-            # Show full biography
-            clear_screen()
-            show_header(f"Biografía de {person['nombres']} {person['apellidos']}")
-            if 'biografia' in person and person['biografia']:
-                print("\n" + "="*80)
-                print(person['biografia'])
-                print("="*80)
-            else:
-                print("\nNo hay una biografía disponible para esta persona.")
+            break
             input("\nPresione ENTER para volver al perfil...")
         elif choice == '4':
             return
