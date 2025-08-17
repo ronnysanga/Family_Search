@@ -1,5 +1,4 @@
-from services.family_tree.relationship_service import add_relationship
-from services.person import get_person_by_id
+from services.relationship.add import add_relationship
 from utils.console_utils import show_header, show_message, get_input, clear_screen
 from ..person.search_views import search_and_select_person
 

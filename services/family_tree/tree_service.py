@@ -1,7 +1,7 @@
 from typing import Dict
 
 from ..person import get_person_by_id
-from .relationship_service import get_relationships
+from ..relationship import get_relationships
 from utils.console_utils import show_message
 
 def get_family_tree(person_id: int, max_depth: int = 3, current_depth: int = 0) -> Dict:
