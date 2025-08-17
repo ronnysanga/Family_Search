@@ -3,10 +3,9 @@ import sys
 from dotenv import load_dotenv
 
 # Import views
-from views.auth_views import show_register_form, show_login_form
-from views.person_views import show_profile, show_search_people, show_add_person_form
+from views.auth.login_view import show_login_form
+from views.auth.register_view import show_register_form
 from views.menu_views import show_main_menu, show_logged_in_menu
-from views.family_tree_views import show_family_tree_menu
 
 def main():
     """Main function to start the application."""

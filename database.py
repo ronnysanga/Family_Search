@@ -4,9 +4,6 @@ import os
 from dotenv import load_dotenv
 
 def create_connection():
-    """
-    Create a database connection using environment variables
-    """
     load_dotenv()
     
     try:
@@ -23,8 +20,5 @@ def create_connection():
         return None
 
 def close_connection(connection):
-    """
-    Close the database connection
-    """
     if connection and connection.is_connected():
         connection.close()
