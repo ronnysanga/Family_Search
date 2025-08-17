@@ -1,37 +1,117 @@
-from typing import Dict, Optional
-from utils.console_utils import show_header, get_input, clear_screen
+from typing import Dict, Optional, Tuple
+from datetime import datetime
+from utils.console_utils import show_header, get_input, clear_screen, show_message
+from services.user import create_user
+from services.person import add_person
 
-def show_register_form() -> Dict[str, str]:
+def validate_password(password: str) -> Optional[str]:
+    """Validate password meets requirements."""
+    if len(password) < 6:
+        return "La contraseña debe tener al menos 6 caracteres"
+    return None
+
+def get_date_input(prompt: str, required: bool = True) -> Optional[str]:
+    """Get and validate a date input."""
+    while True:
+        try:
+            date_str = get_input(prompt, required=required)
+            if not date_str and not required:
+                return None
+                
+            # Validate date format (YYYY-MM-DD)
+            datetime.strptime(date_str, '%Y-%m-%d')
+            return date_str
+        except ValueError:
+            show_message("Formato de fecha inválido. Use YYYY-MM-DD", "error")
+
+def get_gender_input() -> str:
+    """Get and validate gender input."""
+    while True:
+        print("\nSeleccione el sexo:")
+        print("1. Masculino")
+        print("2. Femenino")
+        choice = get_input("Opción (1-2): ", required=True)
+        
+        if choice == '1':
+            return 'masculino'
+        elif choice == '2':
+            return 'femenino'
+        else:
+            show_message("Opción inválida. Intente nuevamente.", "error")
+
+def show_register_form() -> Tuple[bool, str]:
     """
-    Display the registration form and collect user information.
+    Display the registration form and handle user registration.
     
     Returns:
-        Dict[str, str]: Dictionary containing user registration data or error message
+        Tuple[bool, str]: (success, message)
     """
-    clear_screen()
-    show_header("Registro de Nuevo Usuario")
-    print("\nComplete el formulario de registro:")
-    
-    # Get user data with validation
-    user_data = {
-        'nombres': get_input("Nombres: ", required=True),
-        'apellidos': get_input("Apellidos: ", required=True),
-        'email': get_input("Correo electrónico: ", required=True),
-        'password': get_password_input()
-    }
-    
-    return user_data
-
-def get_password_input() -> str:
-    """Get and validate password input with confirmation."""
-    while True:
-        password = get_input("Contraseña (mínimo 6 caracteres): ", password=True, required=True)
-        if len(password) < 6:
-            print("La contraseña debe tener al menos 6 caracteres.")
-            continue
-            
-        confirm = get_input("Confirmar contraseña: ", password=True, required=True)
+    try:
+        clear_screen()
+        show_header("Registro de Nuevo Usuario")
+        print("\nComplete sus datos personales:")
         
-        if password == confirm:
-            return password
-        print("\nLas contraseñas no coinciden. Intente nuevamente.\n")
+        # Get basic person information
+        person_data = {
+            'nombres': get_input("Nombres: ", required=True).strip(),
+            'apellidos': get_input("Apellidos: ", required=True).strip(),
+            'fecha_nacimiento': get_date_input("Fecha de nacimiento (YYYY-MM-DD): "),
+            'sexo': get_gender_input(),
+            'lugar_nacimiento': get_input("Lugar de nacimiento (ciudad, país): ", required=False)
+        }
+        
+        # Get user account information
+        clear_screen()
+        show_header("Creación de Cuenta")
+        print("\nAhora cree sus credenciales de acceso:")
+        
+        user_data = {
+            'email': get_input("Correo electrónico: ", required=True).lower().strip(),
+            'nombres': person_data['nombres'],
+            'apellidos': person_data['apellidos']
+        }
+        
+        # Get and validate password
+        while True:
+            password = get_input("Contraseña (mínimo 6 caracteres): ", password=True, required=True)
+            password_error = validate_password(password)
+            if password_error:
+                show_message(password_error, "error")
+                continue
+                
+            confirm_password = get_input("Confirmar contraseña: ", password=True, required=True)
+            
+            if password != confirm_password:
+                show_message("Las contraseñas no coinciden. Intente nuevamente.", "error")
+                continue
+                
+            user_data['password'] = password
+            break
+        
+        # Create user
+        user_result = create_user(
+            email=user_data['email'],
+            password=user_data['password'],
+            nombres=user_data['nombres'],
+            apellidos=user_data['apellidos']
+        )
+        
+        if 'error' in user_result:
+            return False, f"Error al crear el usuario: {user_result['error']}"
+        
+        # Create person record
+        person_result = create_person(
+            user_id=user_result['user_id'],
+            **person_data
+        )
+        
+        if 'error' in person_result:
+            # If person creation fails, we should handle this (e.g., delete the user)
+            return False, f"Error al crear el perfil: {person_result['error']}"
+        
+        return True, "¡Registro exitoso! Ahora puede iniciar sesión con su correo y contraseña."
+        
+    except KeyboardInterrupt:
+        return False, "Registro cancelado por el usuario"
+    except Exception as e:
+        return False, f"Error en el registro: {str(e)}"
