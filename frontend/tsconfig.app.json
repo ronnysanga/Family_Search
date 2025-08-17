@@ -18,6 +18,14 @@
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
+    
+    /* Paths */
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["./*"],
+      "@/features/*": ["./features/*"],
+      "@/app/*": ["./app/*"]
+    },
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
