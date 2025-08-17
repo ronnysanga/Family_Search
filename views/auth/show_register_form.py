@@ -100,16 +100,21 @@ def show_register_form() -> Tuple[bool, str]:
             return False, f"Error al crear el usuario: {user_result['error']}"
         
         # Create person record
-        person_result = create_person(
-            user_id=user_result['user_id'],
-            **person_data
-        )
+        person_id = add_person(person_data, user_result['user_id'])
         
-        if 'error' in person_result:
+        if not person_id:
             # If person creation fails, we should handle this (e.g., delete the user)
-            return False, f"Error al crear el perfil: {person_result['error']}"
+            return False, "Error al crear el perfil de la persona. Por favor, contacte al administrador."
         
-        return True, "¡Registro exitoso! Ahora puede iniciar sesión con su correo y contraseña."
+        clear_screen()
+        show_header("¡Registro Exitoso!")
+        show_message("Su cuenta ha sido creada exitosamente.", "success")
+        print("\nDetalles de su cuenta:")
+        print(f"Nombre: {user_data['nombres']} {user_data['apellidos']}")
+        print(f"Correo electrónico: {user_data['email']}")
+        print("\nAhora puede iniciar sesión con su correo y contraseña.")
+        input("\nPresione Enter para continuar...")
+        return True, ""
         
     except KeyboardInterrupt:
         return False, "Registro cancelado por el usuario"
