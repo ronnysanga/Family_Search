@@ -22,3 +22,5 @@ def create_connection():
 def close_connection(connection):
     if connection and connection.is_connected():
         connection.close()
+
+
