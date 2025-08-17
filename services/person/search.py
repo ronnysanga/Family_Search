@@ -13,7 +13,10 @@ def search_people(search_term=None, limit=50):
         if search_term:
             search_pattern = f"%{search_term}%"
             query = """
-            SELECT id_persona, nombres, apellidos, fecha_nacimiento, lugar_nacimiento
+            SELECT id_persona, id_usuario_creador, nombres, apellidos, 
+                   fecha_nacimiento, fecha_defuncion, sexo,
+                   lugar_nacimiento, lugar_defuncion, biografia,
+                   fecha_actualizacion, fecha_creacion
             FROM persona
             WHERE nombres LIKE %s OR apellidos LIKE %s
             ORDER BY apellidos, nombres
@@ -22,7 +25,10 @@ def search_people(search_term=None, limit=50):
             cursor.execute(query, (search_pattern, search_pattern, limit))
         else:
             query = """
-            SELECT id_persona, nombres, apellidos, fecha_nacimiento, lugar_nacimiento
+            SELECT id_persona, id_usuario_creador, nombres, apellidos, 
+                   fecha_nacimiento, fecha_defuncion, sexo,
+                   lugar_nacimiento, lugar_defuncion, biografia,
+                   fecha_actualizacion, fecha_creacion
             FROM persona
             ORDER BY apellidos, nombres
             LIMIT %s

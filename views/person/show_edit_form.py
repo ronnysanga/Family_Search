@@ -2,15 +2,27 @@ from typing import Dict, Any, Optional
 from utils.console_utils import show_header, show_message, get_input, clear_screen
 from services.person.update import edit_person
 
-def get_sexo_display(sexo: str) -> str:
-    """Convert sexo value to display format"""
+def get_sexo_display(sexo: Optional[str]) -> str:
+    """Convert sexo value to display format
+    
+    Args:
+        sexo: The gender value from the database (can be None, 'm', 'f', 'masculino', 'femenino')
+        
+    Returns:
+        Formatted gender string for display
+    """
     if not sexo:
         return 'No especificado'
-    sexo = sexo.lower()
-    if sexo in ['masculino', 'm']:
+        
+    sexo = str(sexo).lower().strip()
+    
+    # Handle all possible variations
+    if sexo in ['m', 'masculino']:
         return 'Masculino'
-    elif sexo in ['femenino', 'f']:
+    elif sexo in ['f', 'femenino']:
         return 'Femenino'
+        
+    # If we get here, it's an unexpected value - try to make it presentable
     return sexo.capitalize()
 
 def show_edit_form(person: Dict[str, Any], user_id: int) -> bool:
@@ -22,18 +34,25 @@ def show_edit_form(person: Dict[str, Any], user_id: int) -> bool:
         show_header(f"EDITAR PERFIL DE {person['nombres'].upper()}")
         
         # Show current values with numbers
-        print("\nSeleccione el campo a editar (deje en blanco para terminar):")
-        print(f"1. Nombres: {updated_data.get('nombres', '')}")
-        print(f"2. Apellidos: {updated_data.get('apellidos', '')}")
-        print(f"3. Fecha de Nacimiento: {updated_data.get('fecha_nacimiento', 'No especificada')}")
-        print(f"4. Fecha de Fallecimiento: {updated_data.get('fecha_defuncion', 'No especificada')}")
-        print(f"5. Lugar de Nacimiento: {updated_data.get('lugar_nacimiento', 'No especificado')}")
-        print(f"6. Lugar de Fallecimiento: {updated_data.get('lugar_defuncion', 'No especificado')}")
-        print(f"7. Sexo: {get_sexo_display(updated_data.get('sexo', ''))}")
-        biografia = updated_data.get('biografia', '')
-        print(f"8. Biografía: {biografia[:50]}..." if biografia else "8. Biografía: No especificada")
+        print("\nSeleccione una opción:")
+        print(f" 1. Nombres: {updated_data.get('nombres', '')}")
+        print(f" 2. Apellidos: {updated_data.get('apellidos', '')}")
+        print(f" 3. Fecha de Nacimiento: {updated_data.get('fecha_nacimiento', 'No especificada')}")
+        print(f" 4. Fecha de Fallecimiento: {updated_data.get('fecha_defuncion', 'No especificada')}")
+        print(f" 5. Lugar de Nacimiento: {updated_data.get('lugar_nacimiento', 'No especificado')}")
+        print(f" 6. Lugar de Fallecimiento: {updated_data.get('lugar_defuncion', 'No especificado')}")
+        print(f" 7. Sexo: {get_sexo_display(updated_data.get('sexo'))}")
         
-        field_choice = get_input("\nOpción: ").strip()
+        # Exit option
+        print("\n 0. Salir sin guardar cambios")
+        
+        field_choice = get_input("\nOpción (0-7): ").strip()
+        
+        # Handle exit option
+        if field_choice == '0':
+            if changes_made and not get_yes_no_input("¿Está seguro que desea salir sin guardar los cambios? (s/n): "):
+                continue
+            return False
         
         if not field_choice:  # User pressed Enter to finish
             if changes_made:
@@ -91,28 +110,28 @@ def show_edit_form(person: Dict[str, Any], user_id: int) -> bool:
             input("\nPresione ENTER para continuar...")
 
 def get_sexo_input(current_value: str) -> str:
-    """Get gender input from user"""
+    """Get gender input from user
+    
+    Returns:
+        str: 'masculino' or 'femenino' based on user selection
+    """
     while True:
-        print("\nOpciones de sexo:")
-        print(f"1. Masculino{' (actual)' if get_sexo_display(current_value) == 'Masculino' else ''}")
-        print(f"2. Femenino{' (actual)' if get_sexo_display(current_value) == 'Femenino' else ''}")
-        print("3. Otro")
-        print("4. Cancelar")
+        current_display = get_sexo_display(current_value)
+        print("\nOpciones de sexo (solo se permiten 'masculino' o 'femenino'):")
+        print(f"1. Masculino{' (actual)' if current_display == 'Masculino' else ''}")
+        print(f"2. Femenino{' (actual)' if current_display == 'Femenino' else ''}")
+        print("3. Cancelar")
         
-        opcion = get_input("\nSeleccione una opción (1-4): ").strip()
+        opcion = get_input("\nSeleccione una opción (1-3): ").strip()
         
         if opcion == '1':
             return 'masculino'
         elif opcion == '2':
             return 'femenino'
         elif opcion == '3':
-            custom = get_input("Especifique el sexo (deje en blanco para cancelar): ").strip()
-            if custom:
-                return custom.lower()
-        elif opcion == '4':
             return current_value
         
-        show_message("Opción no válida. Intente nuevamente.", "error")
+        show_message("❌ Opción no válida. Por favor seleccione 1, 2 o 3.", "error")
 
 def get_biografia_input(current_value: str) -> str:
     """Get biography input from user"""

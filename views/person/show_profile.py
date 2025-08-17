@@ -32,11 +32,15 @@ def show_profile(user_id: int, person_id: Optional[int] = None) -> None:
             print(f"Fecha de Nacimiento: {person['fecha_nacimiento']}")
         
         if 'sexo' in person and person['sexo']:
+            # The database only allows 'masculino' or 'femenino', but we'll handle any case
             sexo = person['sexo'].lower()
-            if sexo == 'masculino' or sexo == 'm':
+            if sexo in ['masculino', 'm']:
                 print("Sexo: Masculino")
-            elif sexo == 'femenino' or sexo == 'f':
+            elif sexo in ['femenino', 'f']:
                 print("Sexo: Femenino")
+            else:
+                # Fallback in case an unexpected value is in the database
+                print(f"Sexo: {person['sexo']}")
             
         if 'lugar_nacimiento' in person and person['lugar_nacimiento']:
             print(f"Lugar de Nacimiento: {person['lugar_nacimiento']}")
@@ -53,7 +57,8 @@ def show_profile(user_id: int, person_id: Optional[int] = None) -> None:
         if str(person_id) == str(user_id):
             print("1. Editar perfil")
         print("2. Ver árbol genealógico")
-        print("3. Volver al menú principal")
+        print("3. Ver biografía")
+        print("4. Volver al menú principal")
         
         choice = get_input("\nSeleccione una opción: ").strip()
         
@@ -65,6 +70,17 @@ def show_profile(user_id: int, person_id: Optional[int] = None) -> None:
         elif choice == '2':
             show_family_tree(person_id)
         elif choice == '3':
+            # Show full biography
+            clear_screen()
+            show_header(f"Biografía de {person['nombres']} {person['apellidos']}")
+            if 'biografia' in person and person['biografia']:
+                print("\n" + "="*80)
+                print(person['biografia'])
+                print("="*80)
+            else:
+                print("\nNo hay una biografía disponible para esta persona.")
+            input("\nPresione ENTER para volver al perfil...")
+        elif choice == '4':
             return
         else:
             show_message("Opción no válida. Intente nuevamente.", "error")

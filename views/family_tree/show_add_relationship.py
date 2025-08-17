@@ -51,16 +51,28 @@ def show_add_relationship(user_id: int) -> None:
             break
 
 def _select_relationship_type() -> Optional[Dict[str, str]]:
-    """Display relationship type selection menu."""
+    """Display relationship type selection menu.
+    
+    Returns:
+        Dictionary with relationship type information or None if canceled
+        {
+            'code': str,      # Menu option code
+            'label': str,     # Display label
+            'type': str,      # Database value for direct relationship
+            'inverse': str    # Database value for inverse relationship
+        }
+    """
+    # These values must exactly match the database ENUM definition
+    # Format: (code, display_label, direct_relationship, inverse_relationship)
     relationship_types = [
-        ('1', 'Padre', 'padre', 'hijo(a)'),
-        ('2', 'Madre', 'madre', 'hijo(a)'),
+        ('1', 'Padre', 'padre', 'hijo'),
+        ('2', 'Madre', 'madre', 'hija'),
         ('3', 'Hijo', 'hijo', 'padre'),
         ('4', 'Hija', 'hija', 'madre'),
         ('5', 'Esposo', 'esposo', 'esposa'),
         ('6', 'Esposa', 'esposa', 'esposo'),
-        ('7', 'Hermano', 'hermano', 'hermano(a)'),
-        ('8', 'Hermana', 'hermana', 'hermano(a)')
+        ('7', 'Hermano', 'hermano', 'hermano'),
+        ('8', 'Hermana', 'hermana', 'hermana')
     ]
     
     print("\nSeleccione el tipo de relación:")
