@@ -46,21 +46,57 @@ get_person_by_id = with_db_connection(
         ).fetchone()
 )
 
-search_people = with_db_connection(
-    lambda conn, search_term, limit=50: 
-        conn.cursor(dictionary=True).execute(
-            """
-            SELECT id_persona, nombres, apellidos, 
-                   DATE_FORMAT(fecha_nacimiento, '%d/%m/%Y') as fecha_nac,
-                   sexo
-            FROM persona 
-            WHERE nombres LIKE %s OR apellidos LIKE %s
-            ORDER BY apellidos, nombres
-            LIMIT %s
-            """,
-            (f"%{search_term}%", f"%{search_term}%", limit)
-        ).fetchall()
-)
+def search_people_impl(conn, search_term: str = "", limit: int = 50) -> List[Dict]:
+    """
+    Busca personas en la base de datos por nombre o apellido.
+    La búsqueda es insensible a mayúsculas y minúsculas.
+    
+    Args:
+        conn: Conexión a la base de datos
+        search_term: Término de búsqueda (puede estar vacío para devolver todas las personas)
+        limit: Límite de resultados a devolver
+        
+    Returns:
+        Lista de diccionarios con la información de las personas encontradas
+    """
+    cursor = conn.cursor(dictionary=True)
+    try:
+        if search_term:
+            # Crear una versión con comodines para la búsqueda LIKE
+            like_term = f"%{search_term}%"
+            
+            cursor.execute(
+                """
+                SELECT id_persona, nombres, apellidos, 
+                       DATE_FORMAT(fecha_nacimiento, '%d/%m/%Y') as fecha_nac,
+                       sexo
+                FROM persona 
+                WHERE LOWER(nombres) LIKE LOWER(%s) 
+                   OR LOWER(apellidos) LIKE LOWER(%s)
+                ORDER BY apellidos, nombres
+                LIMIT %s
+                """,
+                (like_term, like_term, limit)
+            )
+        else:
+            # Si no hay término de búsqueda, devolver todas las personas
+            cursor.execute(
+                """
+                SELECT id_persona, nombres, apellidos, 
+                       DATE_FORMAT(fecha_nacimiento, '%d/%m/%Y') as fecha_nac,
+                       sexo
+                FROM persona
+                ORDER BY apellidos, nombres
+                LIMIT %s
+                """,
+                (limit,)
+            )
+        return cursor.fetchall() or []  # Devuelve lista vacía si no hay resultados
+    except Exception as e:
+        show_message(f"Error al buscar personas: {str(e)}", "error")
+        return []
+
+search_people = with_db_connection(search_people_impl)
 
 def create_person(person_data: Dict, user_id: int) -> Optional[int]:
     """Create a new person in the database"""
