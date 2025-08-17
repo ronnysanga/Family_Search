@@ -24,15 +24,18 @@ def get_date_input(prompt: str, required: bool = True) -> Optional[str]:
         except ValueError:
             show_message("Formato de fecha inválido. Use YYYY-MM-DD", "error")
 
-def get_gender_input() -> str:
+def get_gender_input() -> Optional[str]:
     """Get and validate gender input."""
     while True:
-        print("\nSeleccione el sexo:")
+        print("\nSeleccione el sexo (opcional):")
         print("1. Masculino")
         print("2. Femenino")
-        choice = get_input("Opción (1-2): ", required=True)
+        print("3. No especificar")
+        choice = get_input("Opción (1-3, ENTER para omitir): ", required=False)
         
-        if choice == '1':
+        if not choice or choice == '3':
+            return None
+        elif choice == '1':
             return 'masculino'
         elif choice == '2':
             return 'femenino'
@@ -54,11 +57,24 @@ def show_register_form() -> Tuple[bool, str]:
         # Get basic person information
         person_data = {
             'nombres': get_input("Nombres: ", required=True).strip(),
-            'apellidos': get_input("Apellidos: ", required=True).strip(),
-            'fecha_nacimiento': get_date_input("Fecha de nacimiento (YYYY-MM-DD): "),
-            'sexo': get_gender_input(),
-            'lugar_nacimiento': get_input("Lugar de nacimiento (ciudad, país): ", required=False)
+            'apellidos': get_input("Apellidos: ", required=True).strip()
         }
+        
+        # Optional fields
+        fecha_nac = get_date_input("Fecha de nacimiento (YYYY-MM-DD, opcional): ", required=False)
+        if fecha_nac:
+            person_data['fecha_nacimiento'] = fecha_nac
+            
+        sexo = get_gender_input()
+        if sexo:
+            person_data['sexo'] = sexo
+            
+        lugar_nac = get_input("Lugar de nacimiento (ciudad, país, opcional): ", required=False)
+        if lugar_nac:
+            person_data['lugar_nacimiento'] = lugar_nac
+        
+        # No solicitamos la biografía durante el registro
+        # Se calculará posteriormente
         
         # Get user account information
         clear_screen()

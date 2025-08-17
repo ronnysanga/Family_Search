@@ -5,12 +5,6 @@ from services.auth.login_service import authenticate_user
 from services.person import get_person_by_user_id
 
 def show_login_form() -> Optional[Dict[str, Any]]:
-    """
-    Display login form and handle user authentication.
-    
-    Returns:
-        Dictionary with user data if authentication is successful, None otherwise
-    """
     attempts = 0
     max_attempts = 3
     

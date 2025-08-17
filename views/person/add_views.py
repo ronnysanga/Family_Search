@@ -1,30 +1,67 @@
 from services.person import add_person
-from utils.console_utils import show_header, show_message, get_input
+from utils.console_utils import show_header, show_message, get_input, clear_screen
 
 def show_add_person_form(user_id):
+    clear_screen()
     show_header("Agregar Persona")
     
-    person_data = {
-        'nombres': get_input("Nombres: "),
-        'apellidos': get_input("Apellidos: "),
-    }
+    print("\nComplete los datos de la persona. Los campos marcados con * son obligatorios.")
+    
+    # Campos obligatorios
+    person_data = {}
+    
+    # Solo usar get_input para campos requeridos
+    person_data['nombres'] = get_input("* Nombres: ", required=True).strip()
+    person_data['apellidos'] = get_input("* Apellidos: ", required=True).strip()
     
     # Campos opcionales
-    fecha_nacimiento = get_input("Fecha de nacimiento (YYYY-MM-DD, opcional): ", required=False)
-    if fecha_nacimiento:
-        person_data['fecha_nacimiento'] = fecha_nacimiento
+    print("\n  Fecha de nacimiento (opcional - presione ENTER para omitir): ", end='')
+    fecha_nac = input().strip()
+    if fecha_nac:
+        person_data['fecha_nacimiento'] = fecha_nac
     
-    print("\nOpciones de sexo (opcional):")
-    print("1. Masculino")
-    print("2. Femenino")
-    opcion = get_input("Seleccione una opción (1-2, ENTER para omitir): ").strip()
+    # Manejo del campo sexo
+    print("\n  Sexo (opcional):")
+    print("  1. Masculino")
+    print("  2. Femenino")
+    print("  3. No especificar")
+    print("  Opción (1-3, ENTER para omitir): ", end='')
+    opcion = input().strip()
+    
     if opcion == '1':
         person_data['sexo'] = 'masculino'
     elif opcion == '2':
         person_data['sexo'] = 'femenino'
     
-    lugar_nacimiento = get_input("Lugar de nacimiento (opcional): ", required=False)
-    if lugar_nacimiento:
-        person_data['lugar_nacimiento'] = lugar_nacimiento
+    print("\n  Lugar de nacimiento (opcional - presione ENTER para omitir): ", end='')
+    lugar_nac = input().strip()
+    if lugar_nac:
+        person_data['lugar_nacimiento'] = lugar_nac
+        
+    print("\n  Lugar de fallecimiento (opcional - presione ENTER para omitir): ", end='')
+    lugar_def = input().strip()
+    if lugar_def:
+        person_data['lugar_defuncion'] = lugar_def
+        
+    print("\n  Biografía (opcional - presione ENTER para omitir):")
+    print("  ", end='')
+    biografia = input().strip()
+    if biografia:
+        person_data['biografia'] = biografia
+    
+    # Mostrar confirmación
+    clear_screen()
+    show_header("Confirmar Datos")
+    
+    print("\nRevise los datos ingresados:")
+    print("-" * 50)
+    for key, value in person_data.items():
+        if value:
+            print(f"{key.capitalize().replace('_', ' ')}: {value}")
+    
+    confirm = input("\n¿Desea guardar esta persona? (s/n): ").strip().lower()
+    if confirm != 's':
+        show_message("Operación cancelada.", "info")
+        return None
     
     return add_person(person_data, user_id)

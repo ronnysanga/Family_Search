@@ -8,30 +8,50 @@ def show_add_form(user_id: int) -> Optional[int]:
     
     print("\nComplete los datos de la persona. Los campos marcados con * son obligatorios.")
     
-    # Collect person data
+    # Collect person data - only nombres and apellidos are required (NOT NULL in DB)
     person_data = {
         'nombres': get_input("* Nombres: ", required=True),
-        'apellidos': get_input("* Apellidos: ", required=True),
-        'fecha_nacimiento': get_input("  Fecha de nacimiento (YYYY-MM-DD): "),
-        'fecha_defuncion': get_input("  Fecha de fallecimiento (YYYY-MM-DD, opcional): "),
-        'lugar_nacimiento': get_input("  Lugar de nacimiento (opcional): "),
-        'lugar_defuncion': get_input("  Lugar de fallecimiento (opcional): "),
-        'biografia': get_input("  Biografía (opcional): ", multiline=True)
+        'apellidos': get_input("* Apellidos: ", required=True)
     }
     
-    # Handle sex input with validation
-    while True:
-        print("\nOpciones de sexo:")
-        print("1. Masculino")
-        print("2. Femenino")
-        opcion = get_input("Seleccione una opción (1-2): ").strip()
-        if opcion == '1':
-            person_data['sexo'] = 'masculino'
-        elif opcion == '2':
-            person_data['sexo'] = 'femenino'
-        else:
-            show_message("Opción no válida. Debe seleccionar 1 o 2.", "error")
-            continue
+    # Información personal
+    print("\n--- INFORMACIÓN PERSONAL ---")
+    
+    # Fechas importantes
+    print("\nFechas importantes:")
+    print("  Fecha de nacimiento (opcional - formato YYYY-MM-DD): ", end='')
+    fecha_nac = input().strip()
+    if fecha_nac:
+        person_data['fecha_nacimiento'] = fecha_nac
+        
+    print("  Fecha de fallecimiento (opcional - formato YYYY-MM-DD): ", end='')
+    fecha_def = input().strip()
+    if fecha_def:
+        person_data['fecha_defuncion'] = fecha_def
+    
+    # Lugar de origen
+    print("\nLugares:")
+    print("  Lugar de nacimiento (opcional): ", end='')
+    lugar_nac = input().strip()
+    if lugar_nac:
+        person_data['lugar_nacimiento'] = lugar_nac
+    
+    # Sexo
+    print("\nSexo (opcional):")
+    print("  1. Masculino")
+    print("  2. Femenino")
+    print("  3. No especificar")
+    print("  Opción (1-3, ENTER para omitir): ", end='')
+    opcion = input().strip()
+    
+    if opcion == '1':
+        person_data['sexo'] = 'masculino'
+    elif opcion == '2':
+        person_data['sexo'] = 'femenino'
+    elif opcion and opcion != '3':  # Si se ingresó algo que no es 1, 2, 3 o vacío
+        show_message("Opción no válida. Se omitirá el campo de sexo.", "advertencia")
+    
+    # No se solicita biografía ya que se generará automáticamente
     
     # Show confirmation
     clear_screen()
