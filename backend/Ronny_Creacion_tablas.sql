@@ -1,4 +1,5 @@
 /* ==================== Base de datos ==================== */
+DROP DATABASE IF EXISTS family_search;
 CREATE DATABASE IF NOT EXISTS family_search;                
 USE family_search;                                         
 
@@ -48,32 +49,49 @@ CREATE TABLE persona (
    TABLA: relacion_familiar 
    ========================================================== */
 CREATE TABLE relacion_familiar (
-  id_relacion INT NOT NULL AUTO_INCREMENT,                
-  id_persona1 INT NOT NULL,                                 /* Persona origen */
-  id_persona2 INT NOT NULL,                                 /* Persona destino */
-  tipo_relacion ENUM('padre', 'madre', 'hijo', 'hija', 'esposo', 'esposa', 'hermano','hermana') NOT NULL, /* id_persona1 es tipo_relacion de id_persona2 */
-  id_usuario_creador INT NULL,                              /* Autor de la relación; NULL en caso que el usuario sea borrado */
-  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id_relacion),
-  CONSTRAINT fk_rf_p1 FOREIGN KEY (id_persona1) REFERENCES persona(id_persona)
-    ON DELETE CASCADE  /* Si se elimina esa persona de la tabla persona, automáticamente se eliminan las relaciones familiares en las que participaba como persona1. */                                    
-    ON UPDATE CASCADE, /* Si por algún motivo cambia el id_persona (ejemplo: se reasigna la clave primaria), ese cambio se propaga automáticamente en esta tabla. */
-  CONSTRAINT fk_rf_p2 FOREIGN KEY (id_persona2) REFERENCES persona(id_persona)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_rf_creador FOREIGN KEY (id_usuario_creador) REFERENCES usuario(id_usuario)
-    ON DELETE SET NULL /* si el usuario que creó la relación es eliminado de la tabla usuario, el campo id_usuario_creador se vuelve NULL. */                                      /* Opción B: al borrar usuario, relación sigue sin autor */
-    ON UPDATE CASCADE, /* si por algún motivo cambia el id_usuario en la tabla usuario, ese cambio se refleja automáticamente en todas las relaciones que haya creado.*/
-  
-  INDEX ix_rf_p1 (id_persona1), /* agiliza búsquedas donde la persona aparece como origen de la relación. Para que no este escaneando toda la data de la table. */
-  INDEX ix_rf_p2 (id_persona2), /* agiliza búsquedas donde la persona aparece como destino de la relación. Para que no este escaneando toda la data de la table. */
- 
- UNIQUE KEY uq_rf (tipo_relacion, id_persona1, id_persona2), /* Esta línea asegura que cada relación entre dos personas con un tipo de parentesco específico se registre una sola vez. */
- 
- no_autorelacion TINYINT AS (id_persona1 <> id_persona2) VIRTUAL,  /* 1 si son distintas osea si la condicion se cumple, 0 si son iguales */
-  CONSTRAINT ck_rf_not_self CHECK (no_autorelacion = 1)  /* evita auto-relación sin referenciar FKs directamente */
- 
+    id_relacion INT NOT NULL AUTO_INCREMENT,
+    id_persona1 INT NOT NULL,                                 /* Persona origen */
+    id_persona2 INT NOT NULL,                                 /* Persona destino */
+    tipo_relacion ENUM('padre', 'madre', 'hijo', 'hija', 'esposo', 'esposa', 'hermano','hermana') NOT NULL, /* id_persona1 es tipo_relacion de id_persona2 */
+    id_usuario_creador INT NULL,                              /* Autor de la relación; NULL en caso que el usuario sea borrado */
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_relacion),
+    CONSTRAINT fk_rf_p1 FOREIGN KEY (id_persona1) REFERENCES persona(id_persona)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_rf_p2 FOREIGN KEY (id_persona2) REFERENCES persona(id_persona)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_rf_creador FOREIGN KEY (id_usuario_creador) REFERENCES usuario(id_usuario)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
+    INDEX ix_rf_p1 (id_persona1),
+    INDEX ix_rf_p2 (id_persona2),
+    UNIQUE KEY uq_rf (tipo_relacion, id_persona1, id_persona2)
 );
+
+-- Trigger para prevenir auto-relaciones
+DELIMITER //
+CREATE TRIGGER before_insert_relacion_familiar
+BEFORE INSERT ON relacion_familiar
+FOR EACH ROW
+BEGIN
+    IF NEW.id_persona1 = NEW.id_persona2 THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'No se permite la auto-relación (id_persona1 no puede ser igual a id_persona2)';
+    END IF;
+END//
+
+CREATE TRIGGER before_update_relacion_familiar
+BEFORE UPDATE ON relacion_familiar
+FOR EACH ROW
+BEGIN
+    IF NEW.id_persona1 = NEW.id_persona2 THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'No se permite la auto-relación (id_persona1 no puede ser igual a id_persona2)';
+    END IF;
+END//
+DELIMITER ;
 
 /* ==========================================================
    TABLA: registro_historico
