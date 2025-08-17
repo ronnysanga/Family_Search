@@ -5,7 +5,7 @@ import mysql.connector
 from mysql.connector import Error
 import logging
 
-from ..models.persona import (
+from models.persona import (
     PersonaCreate, 
     PersonaResponse, 
     PersonaUpdate,
@@ -13,7 +13,7 @@ from ..models.persona import (
     RelacionFamiliarResponse,
     RelacionTipo
 )
-from ..config.database import get_db_connection
+from config.database import get_db_connection
 
 router = APIRouter(
     prefix="/api/personas",
