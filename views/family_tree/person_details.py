@@ -24,9 +24,14 @@ def show_person_details(person_id: str):
         if 'fecha_def_formateada' in person:
             print(f"  • Fecha de defunción: {person['fecha_def_formateada']}")
             
-        if 'sexo' in person:
-            sexo = "Masculino" if person['sexo'] == 'M' else "Femenino" if person['sexo'] == 'F' else "No especificado"
-            print(f"  • Sexo: {sexo}")
+        if 'sexo' in person and person['sexo']:
+            sexo = person['sexo'].lower()
+            if sexo == 'masculino' or sexo == 'm':
+                print("  • Sexo: Masculino")
+            elif sexo == 'femenino' or sexo == 'f':
+                print("  • Sexo: Femenino")
+            else:
+                print("  • Sexo: No especificado")
             
         if 'lugar_nacimiento' in person and person['lugar_nacimiento']:
             print(f"  • Lugar de nacimiento: {person['lugar_nacimiento']}")

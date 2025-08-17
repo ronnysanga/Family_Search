@@ -21,11 +21,17 @@ def show_add_form(user_id: int) -> Optional[int]:
     
     # Handle sex input with validation
     while True:
-        sexo = get_input("* Sexo (M/F): ", required=True).upper()
-        if sexo in ['M', 'F']:
-            person_data['sexo'] = sexo
-            break
-        show_message("Por favor ingrese 'M' para masculino o 'F' para femenino.", "error")
+        print("\nOpciones de sexo:")
+        print("1. Masculino")
+        print("2. Femenino")
+        opcion = get_input("Seleccione una opción (1-2): ").strip()
+        if opcion == '1':
+            person_data['sexo'] = 'masculino'
+        elif opcion == '2':
+            person_data['sexo'] = 'femenino'
+        else:
+            show_message("Opción no válida. Debe seleccionar 1 o 2.", "error")
+            continue
     
     # Show confirmation
     clear_screen()

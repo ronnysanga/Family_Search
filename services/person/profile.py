@@ -10,9 +10,11 @@ def get_user_profile(user_id):
     try:
         cursor = connection.cursor(dictionary=True)
         query = """
-        SELECT nombres, apellidos, email, fecha_creacion_usuario 
-        FROM usuario 
-        WHERE id_usuario = %s
+        SELECT u.nombres, u.apellidos, u.email, u.fecha_creacion_usuario,
+               p.sexo, p.fecha_nacimiento, p.lugar_nacimiento
+        FROM usuario u
+        LEFT JOIN persona p ON u.id_usuario = p.id_usuario_creador
+        WHERE u.id_usuario = %s
         """
         cursor.execute(query, (user_id,))
         return cursor.fetchone()

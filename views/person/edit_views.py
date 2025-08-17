@@ -19,7 +19,13 @@ def show_edit_person_form(user_id):
         print(f"2. Apellidos: {person.get('apellidos', 'No especificado')}")
         print(f"3. Fecha de nacimiento: {person.get('fecha_nacimiento', 'No especificada')}")
         print(f"4. Lugar de nacimiento: {person.get('lugar_nacimiento', 'No especificado')}")
-        print(f"5. Sexo: {person.get('sexo', 'No especificado')}")
+        sexo = person.get('sexo', '').lower()
+        sexo_display = 'No especificado'
+        if sexo == 'masculino' or sexo == 'm':
+            sexo_display = 'Masculino'
+        elif sexo == 'femenino' or sexo == 'f':
+            sexo_display = 'Femenino'
+        print(f"5. Sexo: {sexo_display}")
         print(f"6. Biografía: {person.get('biografia', 'No especificada')[:50]}{'...' if person.get('biografia') and len(person['biografia']) > 50 else ''}")
         
         print("\n¿Qué campo desea editar? (Ingrese el número, 0 para guardar, 'salir' para cancelar)")
@@ -47,11 +53,19 @@ def show_edit_person_form(user_id):
             person['lugar_nacimiento'] = new_value if new_value else None
         elif choice == '5':
             while True:
-                new_value = input("Nuevo sexo (M/F, deje en blanco para eliminar): ").strip().upper()
-                if not new_value or new_value in ['M', 'F']:
-                    person['sexo'] = new_value if new_value else None
+                print("\nOpciones de sexo (deje en blanco para no cambiar):")
+                print("1. Masculino")
+                print("2. Femenino")
+                opcion = input("Seleccione una opción (1-2, ENTER para no cambiar): ").strip()
+                if opcion == '1':
+                    person['sexo'] = 'masculino'
                     break
-                show_message("Por favor ingrese 'M' para masculino o 'F' para femenino.", "error")
+                elif opcion == '2':
+                    person['sexo'] = 'femenino'
+                    break
+                elif not opcion:
+                    break
+                show_message("Por favor ingrese una opción válida.", "error")
         elif choice == '6':
             print("\nBiografía actual (presione Enter dos veces para terminar):")
             lines = []

@@ -32,7 +32,11 @@ def show_profile(user_id: int, person_id: Optional[int] = None) -> None:
             print(f"Fecha de Nacimiento: {person['fecha_nacimiento']}")
         
         if 'sexo' in person and person['sexo']:
-            print(f"Sexo: {'Masculino' if person['sexo'].upper() == 'M' else 'Femenino'}")
+            sexo = person['sexo'].lower()
+            if sexo == 'masculino' or sexo == 'm':
+                print("Sexo: Masculino")
+            elif sexo == 'femenino' or sexo == 'f':
+                print("Sexo: Femenino")
             
         if 'lugar_nacimiento' in person and person['lugar_nacimiento']:
             print(f"Lugar de Nacimiento: {person['lugar_nacimiento']}")

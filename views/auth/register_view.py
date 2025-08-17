@@ -12,16 +12,18 @@ def show_register_form():
     }
     
     # Pedir el sexo con validación
+    print("\nOpciones de sexo:")
+    print("1. Masculino")
+    print("2. Femenino")
     while True:
-        sexo = get_input("Sexo (M para masculino, F para femenino): ").strip().upper()
-        if sexo == 'M':
+        opcion = get_input("Seleccione una opción (1-2): ").strip()
+        if opcion == '1':
             user_data['sexo'] = 'masculino'
             break
-        elif sexo == 'F':
+        elif opcion == '2':
             user_data['sexo'] = 'femenino'
             break
-        else:
-            show_message("Por favor ingrese 'M' para masculino o 'F' para femenino.", "error")
+        show_message("Opción no válida. Por favor seleccione 1 o 2.", "error")
     
     while True:
         password = getpass.getpass("Contraseña: ")

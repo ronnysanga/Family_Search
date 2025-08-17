@@ -27,7 +27,14 @@ def show_edit_form(person: Dict[str, Any], user_id: int) -> bool:
         print(f"4. Fecha de Fallecimiento: {updated_data.get('fecha_defuncion', 'No especificada')}")
         print(f"5. Lugar de Nacimiento: {updated_data.get('lugar_nacimiento', 'No especificado')}")
         print(f"6. Lugar de Fallecimiento: {updated_data.get('lugar_defuncion', 'No especificado')}")
-        print(f"7. Sexo: {'Masculino' if updated_data.get('sexo', '').upper() == 'M' else 'Femenino'}")
+        # Mostrar el sexo de forma legible
+        sexo = updated_data.get('sexo', '').lower()
+        sexo_display = 'No especificado'
+        if sexo == 'masculino' or sexo == 'm':
+            sexo_display = 'Masculino'
+        elif sexo == 'femenino' or sexo == 'f':
+            sexo_display = 'Femenino'
+        print(f"7. Sexo: {sexo_display}")
         print(f"8. Biografía: {updated_data.get('biografia', 'No especificada')[:50]}..." if updated_data.get('biografia') else "8. Biografía: No especificada")
         
         field_choice = get_input("\nOpción: ").strip()
@@ -57,11 +64,17 @@ def show_edit_form(person: Dict[str, Any], user_id: int) -> bool:
         # Special handling for certain fields
         if field_name == 'sexo':
             while True:
-                new_value = get_input("Nuevo valor (M/F): ").upper()
-                if new_value in ['M', 'F']:
-                    updated_data[field_name] = new_value
+                print("\nOpciones de sexo:")
+                print("1. Masculino")
+                print("2. Femenino")
+                opcion = get_input("Seleccione una opción (1-2): ").strip()
+                if opcion == '1':
+                    updated_data[field_name] = 'masculino'
                     break
-                show_message("Por favor ingrese 'M' para masculino o 'F' para femenino.", "error")
+                elif opcion == '2':
+                    updated_data[field_name] = 'femenino'
+                    break
+                show_message("Opción no válida. Por favor seleccione 1 o 2.", "error")
         elif field_name == 'biografia':
             print("\nIngrese la nueva biografía (presione Ctrl+D o Ctrl+Z + ENTER cuando termine):")
             try:

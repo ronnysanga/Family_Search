@@ -42,9 +42,14 @@ def select_person(prompt: str = "Buscar persona") -> Optional[Dict[str, Any]]:
                 nombres = person.get('nombres', '')[:20]
                 apellidos = person.get('apellidos', '')[:20]
                 fecha_nac = str(person.get('fecha_nacimiento', ''))[:10]
-                sexo = person.get('sexo', '')[:1].upper()
+                sexo = person.get('sexo', '').lower()
+                sexo_display = ''
+                if sexo == 'masculino' or sexo == 'm':
+                    sexo_display = 'M'
+                elif sexo == 'femenino' or sexo == 'f':
+                    sexo_display = 'F'
                 
-                print(f"{i:<4} {nombres:<25} {apellidos:<25} {fecha_nac:<12} {sexo:<6}")
+                print(f"{i:<4} {nombres:<25} {apellidos:<25} {fecha_nac:<12} {sexo_display:<6}")
             
             # Show options
             print("\n" + "-"*80)

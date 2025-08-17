@@ -14,11 +14,14 @@ def show_add_person_form(user_id):
     if fecha_nacimiento:
         person_data['fecha_nacimiento'] = fecha_nacimiento
     
-    sexo = get_input("Sexo (masculino/femenino, opcional): ", required=False).lower()
-    if sexo and sexo in ['masculino', 'femenino']:
-        person_data['sexo'] = sexo
-    elif sexo:
-        show_message("El sexo debe ser 'masculino' o 'femenino'. Campo omitido.", "error")
+    print("\nOpciones de sexo (opcional):")
+    print("1. Masculino")
+    print("2. Femenino")
+    opcion = get_input("Seleccione una opción (1-2, ENTER para omitir): ").strip()
+    if opcion == '1':
+        person_data['sexo'] = 'masculino'
+    elif opcion == '2':
+        person_data['sexo'] = 'femenino'
     
     lugar_nacimiento = get_input("Lugar de nacimiento (opcional): ", required=False)
     if lugar_nacimiento:
