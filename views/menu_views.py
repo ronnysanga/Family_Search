@@ -1,6 +1,6 @@
 import sys
 from utils.console_utils import show_header, get_input, clear_screen, show_message
-from .person_views import show_edit_person_form
+from .person import show_edit_person_form
 
 def show_main_menu():
     """Display the main menu and handle user input."""
@@ -32,14 +32,14 @@ def show_logged_in_menu(user_id):
         choice = get_input("\nSeleccione una opción: ")
         
         if choice == '1':
-            from .person_views import show_profile
+            from .person import show_profile
             show_profile(user_id)
             input("\nPresione Enter para continuar...")
         elif choice == '2':
-            from .person_views import show_search_people
+            from .person import show_search_people
             show_search_people()
         elif choice == '3':
-            from .person_views import show_add_person_form
+            from .person import show_add_person_form
             show_add_person_form(user_id)
             input("\nPresione Enter para continuar...")
         elif choice == '4':
