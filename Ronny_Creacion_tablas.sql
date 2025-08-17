@@ -1,136 +1,100 @@
-/* ==================== Base de datos ==================== */
-CREATE DATABASE IF NOT EXISTS family_search;                
-USE family_search;                                         
 
-/* ==========================================================
-   TABLA: usuario
-   ========================================================== */
-CREATE TABLE usuario (
-  id_usuario INT NOT NULL AUTO_INCREMENT,                  
-  nombres VARCHAR(100) NOT NULL,                          
-  apellidos VARCHAR(100) NOT NULL,                       
-  email VARCHAR(100) NOT NULL,                         
-  password VARCHAR(255) NOT NULL,                          
-  fecha_creacion_usuario TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id_usuario),                                 /* PK del usuario */
-  UNIQUE KEY uq_usuario_email (email)                       /* UNIQUE: evita duplicados de correo */
-);
+Use family_search;
+/* ===================== 1) USUARIO (10) ===================== */
+INSERT INTO usuario (id_usuario, nombres, apellidos, email, password) VALUES
+(1,'Carlos','Pérez','carlos.perez@example.com','hash1'),
+(2,'María','Gómez','maria.gomez@example.com','hash2'),
+(3,'Juan','Pérez','juan.perez@example.com','hash3'),
+(4,'Ana','Pérez','ana.perez@example.com','hash4'),
+(5,'Luis','Gómez','luis.gomez@example.com','hash5'),
+(6,'Carmen','Ruiz','carmen.ruiz@example.com','hash6'),
+(7,'Pedro','Ruiz','pedro.ruiz@example.com','hash7'),
+(8,'Laura','Torres','laura.torres@example.com','hash8'),
+(9,'Diego','Ruiz','diego.ruiz@example.com','hash9'),
+(10,'Sofía','Ruiz','sofia.ruiz@example.com','hash10');
 
-/* ==========================================================
-   TABLA: persona
-   ========================================================== */
-CREATE TABLE persona (
-  id_persona INT NOT NULL AUTO_INCREMENT,              
-  id_usuario_creador INT NULL,                              /* FK autor: NULL si el usuario es borrado */
-  nombres VARCHAR(100) NOT NULL,                     
-  apellidos VARCHAR(100) NOT NULL,
-  fecha_nacimiento DATE NULL,                            
-  fecha_defuncion DATE NULL,                             
-  sexo ENUM('masculino','femenino'),              
-  lugar_nacimiento VARCHAR(225) NULL,                
-  lugar_defuncion VARCHAR(225) NULL,
-  biografia TEXT NULL,
-  fecha_actualizacion TIMESTAMP NULL,                     
-  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id_persona),
-  CONSTRAINT fk_persona_creador
-    FOREIGN KEY (id_usuario_creador) REFERENCES usuario(id_usuario)
-      ON DELETE SET NULL                                    /* si borran al usuario, se anula el autor */
-      ON UPDATE CASCADE,
-  /* CHECK: coherencia temporal. Si existen ambas fechas, defunción >= nacimiento. */
-  CONSTRAINT ck_persona_fechas
-    CHECK (fecha_defuncion IS NULL
-           OR fecha_nacimiento IS NULL
-           OR fecha_defuncion >= fecha_nacimiento)
-);
+/* ===================== 2) PERSONA (10) ===================== */
+INSERT INTO persona
+(id_persona, id_usuario_creador, nombres, apellidos, fecha_nacimiento, fecha_defuncion, sexo, lugar_nacimiento, lugar_defuncion, biografia, fecha_actualizacion) VALUES
+(1,  1,'Carlos','Pérez','1970-05-10',NULL,'masculino','Guayaquil',NULL,'Ingeniero civil.', CURRENT_TIMESTAMP),
+(2,  2,'María','Gómez','1972-08-22',NULL,'femenino','Quito',NULL,'Docente.', CURRENT_TIMESTAMP),
+(3,  3,'Juan','Pérez','1995-03-15',NULL,'masculino','Guayaquil',NULL,'Analista de datos.', CURRENT_TIMESTAMP),
+(4,  4,'Ana','Pérez','1998-07-30',NULL,'femenino','Guayaquil',NULL,'Diseñadora UX.', CURRENT_TIMESTAMP),
+(5,  5,'Luis','Gómez','1945-01-12','2010-09-01','masculino','Riobamba','Guayaquil','Veterano de la fuerza pública.', CURRENT_TIMESTAMP),
+(6,  6,'Carmen','Ruiz','1948-11-02','2015-02-20','femenino','Cuenca','Quito','Comerciante.', CURRENT_TIMESTAMP),
+(7,  7,'Pedro','Ruiz','1975-04-18',NULL,'masculino','Cuenca',NULL,'Administrador.', CURRENT_TIMESTAMP),
+(8,  8,'Laura','Torres','1976-12-05',NULL,'femenino','Loja',NULL,'Arquitecta.', CURRENT_TIMESTAMP),
+(9,  9,'Diego','Ruiz','2005-06-10',NULL,'masculino','Quito',NULL,'Estudiante.', CURRENT_TIMESTAMP),
+(10,10,'Sofía','Ruiz','2008-09-25',NULL,'femenino','Quito',NULL,'Estudiante.', CURRENT_TIMESTAMP);
 
-/* ==========================================================
-   TABLA: relacion_familiar 
-   ========================================================== */
-CREATE TABLE relacion_familiar (
-  id_relacion INT NOT NULL AUTO_INCREMENT,                
-  id_persona1 INT NOT NULL,                                 /* Persona origen */
-  id_persona2 INT NOT NULL,                                 /* Persona destino */
-  tipo_relacion ENUM('padre', 'madre', 'hijo', 'hija', 'esposo', 'esposa', 'hermano','hermana') NOT NULL, /* id_persona1 es tipo_relacion de id_persona2 */
-  id_usuario_creador INT NULL,                              /* Autor de la relación; NULL en caso que el usuario sea borrado */
-  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id_relacion),
-  CONSTRAINT fk_rf_p1 FOREIGN KEY (id_persona1) REFERENCES persona(id_persona)
-    ON DELETE CASCADE  /* Si se elimina esa persona de la tabla persona, automáticamente se eliminan las relaciones familiares en las que participaba como persona1. */                                    
-    ON UPDATE CASCADE, /* Si por algún motivo cambia el id_persona (ejemplo: se reasigna la clave primaria), ese cambio se propaga automáticamente en esta tabla. */
-  CONSTRAINT fk_rf_p2 FOREIGN KEY (id_persona2) REFERENCES persona(id_persona)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_rf_creador FOREIGN KEY (id_usuario_creador) REFERENCES usuario(id_usuario)
-    ON DELETE SET NULL /* si el usuario que creó la relación es eliminado de la tabla usuario, el campo id_usuario_creador se vuelve NULL. */                                      /* Opción B: al borrar usuario, relación sigue sin autor */
-    ON UPDATE CASCADE, /* si por algún motivo cambia el id_usuario en la tabla usuario, ese cambio se refleja automáticamente en todas las relaciones que haya creado.*/
-  
-  INDEX ix_rf_p1 (id_persona1), /* agiliza búsquedas donde la persona aparece como origen de la relación. Para que no este escaneando toda la data de la table. */
-  INDEX ix_rf_p2 (id_persona2), /* agiliza búsquedas donde la persona aparece como destino de la relación. Para que no este escaneando toda la data de la table. */
- 
- UNIQUE KEY uq_rf (tipo_relacion, id_persona1, id_persona2), /* Esta línea asegura que cada relación entre dos personas con un tipo de parentesco específico se registre una sola vez. */
- 
- no_autorelacion TINYINT AS (id_persona1 <> id_persona2) VIRTUAL,  /* 1 si son distintas osea si la condicion se cumple, 0 si son iguales */
-  CONSTRAINT ck_rf_not_self CHECK (no_autorelacion = 1)  /* evita auto-relación sin referenciar FKs directamente */
- 
-);
+/* ============ 3) RELACION_FAMILIAR (>=10, aquí 16) ============ */
+INSERT INTO relacion_familiar
+(id_relacion, id_persona1, id_persona2, tipo_relacion, id_usuario_creador) VALUES
+-- Pareja 1
+(1, 1, 2, 'esposo', 1),
+(2, 2, 1, 'esposa', 2),
+-- Hijos de Carlos y María
+(3, 1, 3, 'padre', 1),
+(4, 2, 3, 'madre', 2),
+(5, 1, 4, 'padre', 1),
+(6, 2, 4, 'madre', 2),
+-- Abuelos maternos de María
+(7, 5, 2, 'padre', 5),
+(8, 6, 2, 'madre', 6),
+-- Hermanos Juan y Ana
+(9,  3, 4, 'hermano', 3),
+(10, 4, 3, 'hermana', 4),
+-- Pareja 2
+(11, 7, 8, 'esposo', 7),
+(12, 8, 7, 'esposa', 8),
+-- Hijos de Pedro y Laura
+(13, 7, 9, 'padre', 7),
+(14, 8, 9, 'madre', 8),
+(15, 7,10, 'padre', 7),
+(16, 8,10, 'madre', 8);
 
-/* ==========================================================
-   TABLA: registro_historico
-   ========================================================== */
-CREATE TABLE registro_historico (
-  id_registro_historico INT NOT NULL AUTO_INCREMENT,      
-  descripcion TEXT NOT NULL,                                /* descricion  del documento */
-  tipo_documento ENUM('acta_nacimiento','acta_matrimonio','acta_defuncion','titulo_academico','otra') DEFAULT 'otra',                                         /* Dominio con valor por defecto */
-  url_documento TEXT NULL,                                  
-  id_usuario_subida INT NULL,                               /* Autor de la subida; NULL si el usuario fue borrado */
-  fecha_subida TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  fuente_validadora VARCHAR(45) NULL,                       /* Ej: "Registro Civil" para una acta_nacimiento, "Espol" para un titulo */
-  PRIMARY KEY (id_registro_historico),
-  INDEX fk_rh_usuario (id_usuario_subida),                  /* Índice para consultas */
-  CONSTRAINT fk_rh_usuario
-    FOREIGN KEY (id_usuario_subida) REFERENCES usuario(id_usuario)
-      ON DELETE SET NULL /* mantener documento aunque el usuario que subio la data se borre */
-      ON UPDATE CASCADE /* actualizacion en cascada de la id del usuario que hizo la subida */
-);
+/* ============ 4) REGISTRO_HISTORICO (10) ============ */
+INSERT INTO registro_historico
+(id_registro_historico, descripcion, tipo_documento, url_documento, id_usuario_subida, fuente_validadora) VALUES
+(1,'Acta de nacimiento de Carlos Pérez','acta_nacimiento','https://docs.example.com/acta_carlos',1,'Registro Civil'),
+(2,'Acta de nacimiento de María Gómez','acta_nacimiento','https://docs.example.com/acta_maria',2,'Registro Civil'),
+(3,'Acta de nacimiento de Juan Pérez','acta_nacimiento','https://docs.example.com/acta_juan',3,'Registro Civil'),
+(4,'Acta de nacimiento de Ana Pérez','acta_nacimiento','https://docs.example.com/acta_ana',4,'Registro Civil'),
+(5,'Acta de nacimiento de Pedro Ruiz','acta_nacimiento','https://docs.example.com/acta_pedro',7,'Registro Civil'),
+(6,'Acta de matrimonio de Carlos Pérez y María Gómez','acta_matrimonio','https://docs.example.com/mat_carlos_maria',2,'Registro Civil'),
+(7,'Acta de defunción de Luis Gómez','acta_defuncion','https://docs.example.com/def_luis',5,'Registro Civil'),
+(8,'Acta de defunción de Carmen Ruiz','acta_defuncion','https://docs.example.com/def_carmen',6,'Registro Civil'),
+(9,'Acta de nacimiento de Laura Torres','acta_nacimiento','https://docs.example.com/acta_laura',8,'Registro Civil'),
+(10,'Acta de nacimiento de Sofía Ruiz','acta_nacimiento','https://docs.example.com/acta_sofia',10,'Registro Civil');
 
-/* ==========================================================
-   TABLA: enlace (persona ↔ registro_historico) - se la creo para que no haya M:N 
-   ========================================================== */
-CREATE TABLE enlace (
-  id_persona INT NOT NULL,                                  /* Persona referenciada */
-  id_registro_historico INT NOT NULL,                       /* Documento referenciado */
-  fecha_enlazamiento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  creacion_id_usuario INT NULL,                              /* Usuario que creó el enlace; NULL si se borra */
-  PRIMARY KEY (id_persona, id_registro_historico),          /* Pk compuesto*/
-  CONSTRAINT fk_enlace_persona
-    FOREIGN KEY (id_persona) REFERENCES persona(id_persona)
-      ON DELETE CASCADE         /* Borrado en cascada */                    
-      ON UPDATE CASCADE,        /* Update en cascada */
-  CONSTRAINT fk_enlace_registro
-    FOREIGN KEY (id_registro_historico) REFERENCES registro_historico(id_registro_historico)
-      ON DELETE CASCADE         /* Borrado en cascada */                        
-      ON UPDATE CASCADE,        /* Update en cascada */
-  CONSTRAINT fk_enlace_usuario
-    FOREIGN KEY (creacion_id_usuario) REFERENCES usuario(id_usuario)
-      ON DELETE SET NULL        /* al borrar usuario que creo ese enlace, el enlace sobrevive sin autor */
-      ON UPDATE CASCADE         /* Update del id del usuario creador del enlace */
-);
+/* ===================== 5) ENLACE (>=10) ===================== */
+INSERT INTO enlace
+(id_persona, id_registro_historico, creacion_id_usuario) VALUES
+-- Nacimientos
+(1, 1, 1),
+(2, 2, 2),
+(3, 3, 3),
+(4, 4, 4),
+(7, 5, 7),
+(8, 9, 8),   -- Laura: persona 8 ↔ doc 9
+(10,10,10),  -- Sofía: persona 10 ↔ doc 10
+-- Matrimonio Carlos & María
+(1, 6, 2),
+(2, 6, 2),
+-- Defunciones
+(5, 7, 5),
+(6, 8, 6);
 
-/* ==========================================================
-   TABLA: historial_cambio (log)
-   ========================================================== */
-CREATE TABLE historial_cambio (
-  id_cambio INT NOT NULL AUTO_INCREMENT,                    /* PK del cambio */
-  id_usuario INT NULL,                                      /* Autor del cambio; NULL si el usuario fue borrado */
-  tipo_entidad ENUM('persona','registro_historico','relacion_familiar') NOT NULL, /* entidades a la que se le modificara y generara un log */
-  id_entidad INT NOT NULL,                                  /* ID espefico de la instancia de la entidad afectada */
-  fecha_cambio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id_cambio),
-  INDEX fk_hc_usuario (id_usuario),                         
-  INDEX ix_hc_target (tipo_entidad, id_entidad),        
-  CONSTRAINT fk_hc_usuario
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
-      ON DELETE SET NULL  /* conservar el log aunque el usuario se borre */
-      ON UPDATE CASCADE   /* Update de id usuario ligado a ese log */
-);
+/* ===================== 6) HISTORIAL_CAMBIO (10) ===================== */
+INSERT INTO historial_cambio
+(id_cambio, id_usuario, tipo_entidad, id_entidad) VALUES
+(1,  1,'persona',1),
+(2,  2,'persona',2),
+(3,  3,'persona',3),
+(4,  4,'persona',4),
+(5,  5,'registro_historico',7),
+(6,  6,'registro_historico',8),
+(7,  2,'registro_historico',6),
+(8,  7,'relacion_familiar',13),
+(9,  8,'relacion_familiar',16),
+(10, NULL,'persona',9);
