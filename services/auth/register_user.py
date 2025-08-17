@@ -1,6 +1,6 @@
 from database import create_connection, close_connection
 from utils.console_utils import show_message
-from services.person_service import add_person
+from services.person import add_person
 
 def register_user(user_data):
     connection = create_connection()

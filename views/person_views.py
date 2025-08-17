@@ -1,4 +1,4 @@
-from services.person_service import get_user_profile, search_people, add_person, edit_person
+from services.person import get_user_profile, search_people, add_person, edit_person
 from utils.console_utils import show_header, show_message, get_input, clear_screen
 
 def show_profile(user_id):
