@@ -1,5 +1,49 @@
 import os
 
+def print_colored(text, color=None, style=None, end='\n'):
+    """
+    Imprime texto con colores en la consola.
+    
+    Args:
+        text (str): Texto a imprimir
+        color (str, optional): Color del texto. Opciones: 'black', 'red', 'green', 'yellow', 
+                             'blue', 'magenta', 'cyan', 'white'.
+        style (str, optional): Estilo del texto. Opciones: 'bold', 'underline', 'reverse'.
+        end (str, optional): Carácter de fin de línea. Por defecto es '\n'.
+    """
+    colors = {
+        'black': '30',
+        'red': '31',
+        'green': '32',
+        'yellow': '33',
+        'blue': '34',
+        'magenta': '35',
+        'cyan': '36',
+        'white': '37',
+        'reset': '0'
+    }
+    
+    styles = {
+        'bold': '1',
+        'underline': '4',
+        'reverse': '7',
+        'reset': '0'
+    }
+    
+    color_code = ''
+    style_code = ''
+    
+    if color and color in colors:
+        color_code = f'\033[{colors[color]}m'
+    
+    if style and style in styles:
+        style_code = f'\033[{styles[style]}m'
+    
+    reset_code = '\033[0m' if color_code or style_code else ''
+    
+    print(f"{color_code}{style_code}{text}{reset_code}", end=end)
+
+
 def clear_screen():
     """Clear the console screen."""
     os.system('cls' if os.name == 'nt' else 'clear')
