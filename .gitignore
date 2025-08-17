@@ -1,0 +1,39 @@
+# Entornos virtuales
+venv/
+env/
+ENV/
+
+# Archivos de entorno
+.env
+.env.local
+.env.*.local
+*env*
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Directorios de caché de Python
+.python-venv/
+.pytest_cache/
+.mypy_cache/
+
+# Archivos de configuración de IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Archivos de base de datos
+*.db
+*.sqlite3
+
+# Archivos de registro
+*.log
+
+# Directorios de distribución
+dist/
+build/
+*.egg-info/
+/__pycache__
