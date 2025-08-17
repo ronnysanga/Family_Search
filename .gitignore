@@ -1,5 +1,5 @@
 # Entornos virtuales
-venv/
+*venv/
 env/
 ENV/
 
@@ -7,7 +7,6 @@ ENV/
 .env
 .env.local
 .env.*.local
-*env*
 
 # Archivos de Python
 __pycache__/
