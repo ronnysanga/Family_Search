@@ -1,11 +1,33 @@
 import os
 import sys
 from dotenv import load_dotenv
-
-# Import views
 from views.auth.login_view import show_login_form
-from views.auth.register_view import show_register_form
-from views.menu_views import show_main_menu, show_logged_in_menu
+from views.auth.show_register_form import show_register_form
+from views.menus.show_main_menu import show_main_menu
+from views.menus.show_logged_in_menu import show_logged_in_menu
+from views.person import show_profile, show_add_form, show_edit_form, show_search, select_person
+from views.family_tree import show_family_tree, show_add_relationship
+
+def handle_logged_in_choice(choice: str, user_id: int) -> str:
+    """Handle user's choice from the logged-in menu."""
+    if choice == '1':  # View profile
+        show_profile(user_id)
+    elif choice == '2':  # Search people
+        show_search()
+    elif choice == '3':  # Add person
+        show_add_form(user_id)
+    elif choice == '4':  # Edit person
+        person = select_person("Seleccione la persona a editar")
+        if person:
+            show_edit_form(person, user_id)
+    elif choice == '5':  # View family tree
+        show_family_tree()
+    elif choice == '6':  # Add relationship
+        show_add_relationship(user_id)
+    elif choice == '7':  # Logout
+        return 'logout'
+        
+    return ''
 
 def main():
     """Main function to start the application."""
@@ -41,12 +63,15 @@ def main():
                 
         else:
             # Show menu for authenticated users
-            result = show_logged_in_menu(current_user['id_usuario'])
+            choice = show_logged_in_menu(current_user['id_usuario'])
             
-            # Si el resultado es 'logout', cerramos la sesión
-            if result == 'logout':
+            # Handle user's choice
+            if choice == 'logout':
                 current_user = None
-                input("Presione Enter para continuar...")
+            else:
+                result = handle_logged_in_choice(choice, current_user['id_usuario'])
+                if result == 'logout':
+                    current_user = None
 
 if __name__ == "__main__":
     try:

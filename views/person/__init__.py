@@ -1,13 +1,13 @@
-# Importar las vistas principales para exponerlas en el espacio de nombres del paquete
-from .profile_views import show_profile
-from .search_views import show_search_people, search_and_select_person
-from .add_views import show_add_person_form
-from .edit_views import show_edit_person_form
+from .select_person import select_person
+from .show_profile import show_profile
+from .show_add_form import show_add_form
+from .show_edit_form import show_edit_form
+from .show_search import show_search
 
 __all__ = [
+    'select_person',
     'show_profile',
-    'show_search_people',
-    'search_and_select_person',
-    'show_add_person_form',
-    'show_edit_person_form'
+    'show_add_form',
+    'show_edit_form',
+    'show_search'
 ]

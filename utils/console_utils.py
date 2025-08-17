@@ -18,7 +18,7 @@ def show_message(message, message_type="info"):
     else:
         print(f"\n[i] {message}")
 
-def get_input(prompt, required=True, input_type=str):
+def get_input(prompt, required=True, input_type=str, password=False):
     """
     Get user input with validation.
     
@@ -26,13 +26,19 @@ def get_input(prompt, required=True, input_type=str):
         prompt (str): The prompt to display to the user
         required (bool): Whether the input is required
         input_type (type): The expected data type of the input
+        password (bool): If True, input will be hidden (for passwords)
         
     Returns:
         The user input converted to the specified type, or None if input is empty and not required
     """
     while True:
         try:
-            value = input(prompt).strip()
+            if password:
+                import getpass
+                value = getpass.getpass(prompt)
+            else:
+                value = input(prompt).strip()
+                
             if not value:
                 if required:
                     show_message("Este campo es requerido.", "error")

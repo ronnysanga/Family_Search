@@ -1,11 +1,12 @@
-from .relationship_views import show_add_relationship
-from .tree_menu import show_family_tree_menu
-from .tree_view import show_family_tree_view
-from .person_details import show_person_details
+"""
+Family Tree Views Package
+
+This package contains all family tree related view functions.
+"""
+from .show_tree import show_family_tree
+from .show_add_relationship import show_add_relationship
 
 __all__ = [
-    'show_add_relationship',
-    'show_family_tree_menu',
-    'show_family_tree_view',
-    'show_person_details'
+    'show_family_tree',
+    'show_add_relationship'
 ]
