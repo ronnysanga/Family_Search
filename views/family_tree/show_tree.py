@@ -34,6 +34,23 @@ def get_parents(person_id: int) -> List[Dict]:
             cursor.close()
         close_connection(conn)
 
+def show_ancestors(person_id: int, level: int = 1) -> None:
+    """
+    Muestra los ancestros de una persona de forma recursiva.
+    """
+    parents = get_parents(person_id)
+    
+    if not parents:
+        return
+        
+    for parent in parents:
+        # Mostrar el ancestro con la indentación adecuada
+        indent = '  ' * level
+        print(f"{indent}└── {parent['nombres']} {parent['apellidos']}")
+        
+        # Mostrar ancestros del padre/madre (llamada recursiva)
+        show_ancestors(parent['id_persona'], level + 1)
+
 def show_person_tree(person_id: int, is_current_user: bool = False) -> None:
     """
     Muestra el árbol genealógico de una persona específica.
@@ -51,24 +68,8 @@ def show_person_tree(person_id: int, is_current_user: bool = False) -> None:
     relation_note = " (Tú)" if is_current_user else ""
     print(f"\n{person['nombres']} {person['apellidos']}{relation_note}")
     
-    # Obtener y mostrar padres
-    parents = get_parents(person_id)
-    
-    if not parents:
-        print("\nNo se encontraron padres registrados.")
-    else:
-        print("\nPadres:")
-        for parent in parents:
-            relation = 'Padre' if parent['tipo_relacion'] == 'padre' else 'Madre'
-            print(f"- {parent['nombres']} {parent['apellidos']} ({relation})")
-            
-            # Mostrar abuelos (padres de los padres)
-            grandparents = get_parents(parent['id_persona'])
-            if grandparents:
-                print("  Abuelos:")
-                for grandparent in grandparents:
-                    relation = 'Abuelo' if grandparent['tipo_relacion'] == 'padre' else 'Abuela'
-                    print(f"  - {grandparent['nombres']} {grandparent['apellidos']} ({relation})")
+    # Mostrar ancestros recursivamente
+    show_ancestors(person_id)
 
 def show_family_tree(user_id: int) -> None:
     """
