@@ -1,0 +1,102 @@
+--------------------------------------------------------------------------------------------------------
+				       ETAPAS DEL PROYECTO
+			    AZURE DATABASE FOR MYSQL FLEXIBLE SERVER
+--------------------------------------------------------------------------------------------------------
+
+Figure 1 & Figure 2 & Figure 3.
+Primero se accedió a la plataforma de Microsoft Azure con la cuenta de Estudiante para recibir un saldo el cual pueda emplearse en la creación de una Azure Database for MySQL - Flexible Server.
+Se definen los detalles del proyecto como la clase de Suscripción, el nombre del servidor, región, credenciales del administrador, y finalmente el tipo de Working. Que en este caso será Dev/Test.
+Después de aquello pasamos a la página de confirmación de la creación del Flexible Server para tener la DB totalmente funcionado en los servidores de Microsoft.
+
+
+Figure 4 & Figure 5
+Una vez creado con éxito la DB en Microsoft Azure, se ingresa de manera exitosa a la plataforma principal para configurar los parámetros definidos en la documentación del proyecto. En la sección de Networking del DB, se dispuso de los siguientes criterios para que el docente y cualquier otro usuario sea capaz de ingresar a la base de datos con las credenciales correspondientes:
+- Public Access: Activado.
+	Permite el acceso público a este recurso a través de internet usando la IP pública del dispositivo entrante.
+- Firewall Rules: Activado
+	Se estableció la siguiente regla para que todo usuario sea capaz de establecer conexión con la DB de Azure.
+	Firewall Rule Name: AllowAll_2025-8-11_11-42-45
+	Start IP Address: 0.0.0.0
+	End IP Address: 255.255.255.255
+	(Autoriza el acceso a toda IP sin excepción alguna)
+Con ello establecido, los integrantes del grupo pudieron conectarse para dar verificación de que no haya error alguno al momento de fijar una conexión con Azure.
+
+Figure 6 & Figure 7
+Antes de realizar la conexión por medio del CMD de Windows, se empleó la herramienta de MySQL Workbench que se está utilizando en el curso. Para ello, se establecieron los siguientes llenados en los campos para su correcto link con la DB.
+- Connection Name: SBD Project G8 (Este nombre es local, por lo que no influye en el proceso de erigir la DB )
+- Connection Method: Standard (TCP/IP) (Este protocolo de conexión sí es obligatorio, inclusive definido por Microsoft durante su instructivo)
+	Sección Parameters:
+	- Hostname: sbd-project-g8.mysql.database.azure.com (Requerido, y no puede ser modificable)
+	- Port: 3306 (El predeterminado para estas conexiones)
+	- Username: sbdadmin (Definido por nosotros durante el proceso de creación de la DB en Azure)
+	- Password: **** (Definido por nosotros durante el proceso de creación de la DB en Azure)
+	Sección SSL:
+	- Use SSL: Requiere (Obligatorio para dar uso del certificado SSL CA que brinda Microsoft en su Website)
+	- SSL CA File: Ruta del Certifificado (El archivo se lo descarga desde la propia Website de Microsoft)
+Finalmente, se presiona el botón "Test Connection" para corroborar la conexión. Si todo está correctamente ingresado, aparecerá la siguiente ventana emergente con el mensaje de conexión existosa. Terminado aquello, se procede a presionar "Ok" para agregar la DB a nuestro entorno de trabajo en MySQL Workbench.
+
+Figure 8 & Figure 9
+Como otro paso importante dentro del desarrollo del proyecto, es la colaboración entre todos los integrantes. Se accede a la sección "Access control (IAM)" en la plataforma principal de Azure de Microsoft. Luego a "Role Assignments", y dentro de dicha área, en la parte superior está la opción "Add". Se da clic aquello para ir a la otra ventana donde se puede buscar los correos electrónicos de cada miembro de trabajo.
+
+Figure 10
+De igual forma, se puede realizar una conexión directa a la DB por medio del CMD de Windows, como otra alternativa para trabajar en ella. Para esto, se debe de emplear el siguiente comando:
+	mysql -h sbd-project-g8.mysql.database.azure.com -u sbdadmin -p --ssl-ca="C:\Users\joanm\OneDrive\Documents\DigiCertGlobalRootCA.crt.pem" --ssl-mode=REQUIRED
+En donde de igual forma debemos de mencionar el directorio exacto del certificado SSL CA de Microsoft.
+
+Figure 11 & Figure 12
+El siguiente paso dentro del desarrollo del proyecto, es la definición del script que se encargase de crear los Schemas que se emplearían en la DB junto con sus atributos y tipos de datos. Para ello, se realizó la correspondiente reunión con los integrantes del grupo para delimitar y efectuar las correspondientes correcciones al modelo anterior, y así, evitar posibles errores futuros.
+
+Figure 13, 14, 15
+
+Una vez con el Script SQL completado, se conectó a la DB mediante la herramienta DBeaver para facilitar su visualización para el usuario. Se seleccionó dicha DB, para posteriormente ejecutar el Script y crear de esta forma, las correspondientes tablas con sus atributos y propiedades tal y como se definió en el modelo o diagrama de datos lógicos.
+
+--------------------------------------------------------------------------------------------------------
+				ETAPAS DEL PROYECTO FIXED
+--------------------------------------------------------------------------------------------------------
+
+Figure 1 & Figure 2 & Figure 3.
+Primero, se accedió a la plataforma de Microsoft Azure con la cuenta de estudiante para recibir un saldo, el cual puede emplearse en la creación de una Azure Database for MySQL - Flexible Server.
+Se definieron los detalles del proyecto, como la suscripción, el nombre del servidor, la región, las credenciales del administrador y, finalmente, el tipo de Working, que en este caso será Dev/Test.
+Después de aquello, se pasó a la página de confirmación para la creación del Flexible Server, con el fin de tener la base de datos totalmente funcionando en los servidores de Microsoft.
+
+Figure 4 & Figure 5
+Una vez creada con éxito la base de datos en Microsoft Azure, se ingresó de manera satisfactoria a la plataforma principal para configurar los parámetros definidos en la documentación del proyecto.
+En la sección Networking de la base de datos, se establecieron los siguientes criterios para que el docente y cualquier otro usuario pudieran acceder a la base de datos con las credenciales correspondientes:
+	Public Access: Activado
+	Permite el acceso público a este recurso a través de internet utilizando la IP pública del dispositivo entrante.
+
+	Firewall Rules: Activado
+	Se configuró la siguiente regla para que cualquier usuario pudiera establecer conexión con la base de datos de Azure:
+		Firewall Rule Name: AllowAll_2025-8-11_11-42-45
+		Start IP Address: 0.0.0.0
+		End IP Address: 255.255.255.255
+		(Autoriza el acceso a toda IP sin restricción).
+Con ello establecido, los integrantes del grupo pudieron conectarse y verificar que no existiera error alguno al momento de establecer una conexión con Azure.
+
+Figure 6 & Figure 7
+Antes de realizar la conexión por medio del CMD de Windows, se empleó la herramienta MySQL Workbench, utilizada en el curso. Para ello, se completaron los siguientes campos para establecer correctamente el enlace con la base de datos:
+	Connection Name: SBD Project G8 (Este nombre es local, por lo que no influye en el proceso de creación de la base de datos).
+	Connection Method: Standard (TCP/IP) (Este protocolo de conexión es obligatorio, incluso definido por Microsoft en su instructivo).
+	Sección Parameters:
+		Hostname: sbd-project-g8.mysql.database.azure.com (Requerido y no modificable).
+		Port: 3306 (El valor predeterminado para estas conexiones).
+		Username: sbdadmin (Definido durante el proceso de creación de la base de datos en Azure).
+		Password: **** (Definido durante el proceso de creación de la base de datos en Azure).
+	Sección SSL:
+		Use SSL: Require (Obligatorio para utilizar el certificado SSL CA proporcionado por Microsoft en su sitio web).
+		SSL CA File: Ruta del certificado (El archivo se descarga directamente desde el sitio web de Microsoft).
+Finalmente, se presiona el botón "Test Connection" para corroborar la conexión. Si todo está correctamente configurado, aparecerá una ventana emergente con el mensaje de conexión exitosa. Una vez confirmado, se presiona "OK" para agregar la base de datos a nuestro entorno de trabajo en MySQL Workbench.
+
+Figure 8 & Figure 9
+Como otro paso importante dentro del desarrollo del proyecto, se destaca la colaboración entre todos los integrantes. Para ello, se accede a la sección "Access control (IAM)" en la plataforma principal de Microsoft Azure. Luego, dentro de "Role Assignments", en la parte superior se encuentra la opción "Add", la cual se selecciona para abrir una nueva ventana donde es posible buscar los correos electrónicos de cada miembro del equipo de trabajo.
+
+Figure 10
+De igual forma, es posible realizar una conexión directa a la base de datos por medio del CMD de Windows, como una alternativa adicional para trabajar en ella. Para esto, se debe emplear el siguiente comando:
+	mysql -h sbd-project-g8.mysql.database.azure.com -u sbdadmin -p --ssl-ca="C:\Users\joanm\OneDrive\Documents\DigiCertGlobalRootCA.crt.pem" --ssl-mode=REQUIRED
+En este comando, se debe indicar la ruta exacta del certificado SSL CA proporcionado por Microsoft.
+
+Figure 11 & Figure 12
+El siguiente paso dentro del desarrollo del proyecto es la definición del script encargado de crear los Schemas que se emplearán en la base de datos, junto con sus atributos y tipos de datos. Para ello, se realizó una reunión con los integrantes del grupo con el fin de delimitar y efectuar las correcciones necesarias al modelo anterior, y así evitar posibles errores futuros.
+
+Figure 13, 14, 15
+Una vez completado el script SQL, se estableció la conexión a la base de datos mediante la herramienta DBeaver, con el fin de facilitar su visualización para el usuario. Se seleccionó dicha base de datos y, posteriormente, se ejecutó el script para crear las tablas correspondientes con sus atributos y propiedades, tal como se definió en el modelo o diagrama lógico de datos.

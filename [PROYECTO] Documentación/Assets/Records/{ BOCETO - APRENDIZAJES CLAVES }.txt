@@ -1,0 +1,28 @@
+--------------------------------------------------------------------------------------------------------
+		REFLEXIÓN SOBRE DIFICULTADES, SOLUCIONES APLICADAS Y APRENDIZAJES CLAVES
+			    AZURE DATABASE FOR MYSQL FLEXIBLE SERVER
+--------------------------------------------------------------------------------------------------------
+Las dificultades presentadas en el proyecto estuvieron relacionadas con la ingeniería inversa de obtener una Base de Datos similar a la que está empleando la plataforma FamilySearch. Para esto, el primer modelo efectuado el parcial anterior, tuvo que ser modificado con los nuevos conocimientos adquiridos por parte de todos los miembros del grupo, con la finalidad de brindar las correcciones respectivos para el Schema que se emplearía en la DB levantada en Microsoft Azure.
+Una de las dificultades con mayor prioridad a resolver que se nos presentó fue referente a la Table "Relación Familiar" y "Enlace". Después de un charla entre todo el equipo, se logró encontrar la respuesta más óptima para su implementación.
+Otra dificultad adicional que se presentó fue la creación de la Base de Datos con el servicio de Microsoft Azure, ya que respondía con "Deployment failed" cada que se intentaba levantar dicha DB, pero fueron problemas de región con la cuenta de estudiante universitario, y luego se pudo solventar cambiando ciertos parámetros.
+
+Referente a los aprendizajes claves durante el desarrollo de este proyecto tenemos:
+	La creación de una DB con los servicios brindados por Microsoft Azure con la finalidad de poner en práctica todo lo aprendido referente a modelos de bases de datos, scripts de SQL, entre otros subtópicos.
+	Manejo de plataformas de trabajo cooperativas como Github para una realización en tiempo real de todos los integrantes del equipo de desarrollo de forma ininterrumpida.
+	El funcionamiento de plataformas que manejan cantidades exorbitantes de datos, y cómo pueden mantener la seguridad del usuario pese a estar trabajando todos de manera cooperativo, como lo es el caso de los Usuarios con sus árboles compartidos.
+	La creación de una DB con parámetros de seguridad como lo fue el certifico SSL de Microsoft el cual era obligatorio para poder conectarse desde una red externa. Así mismo, se adquirió conocimiento referente a la configuración del Firewall para permitir el ingreso de cualquier IP a la base de datos, siempre y cuando posean las credenciales correspondientes.
+
+--------------------------------------------------------------------------------------------------------
+						FIXED
+--------------------------------------------------------------------------------------------------------
+Las dificultades presentadas en el proyecto estuvieron relacionadas con la ingeniería inversa necesaria para obtener una base de datos similar a la utilizada en la plataforma FamilySearch. Para esto, el primer modelo elaborado en el parcial anterior tuvo que ser modificado con los nuevos conocimientos adquiridos por todos los miembros del grupo, con la finalidad de realizar las correcciones correspondientes en el schema que se emplearía en la base de datos implementada en Microsoft Azure.
+
+Una de las principales dificultades a resolver fue la relacionada con las tablas “Relación Familiar” y “Enlace”. Después de una charla entre todo el equipo, se logró encontrar la solución más adecuada para su implementación, estableciendo una cardinalidad apropiada y un esquema lógico que facilitara su comprensión por parte de usuarios externos.
+
+Otra dificultad adicional que se presentó fue la creación de la base de datos con el servicio de Microsoft Azure, ya que respondía con “Deployment failed” cada vez que se intentaba desplegarla. Esto se debió a problemas de región asociados a la cuenta de estudiante universitario, los cuales se pudieron solventar modificando ciertos parámetros.
+
+Aprendizajes clave obtenidos durante el desarrollo del proyecto:
+El aprendizaje consistió en la creación de una base de datos con los servicios de Microsoft Azure, lo cual permitió poner en práctica lo aprendido sobre modelos de bases de datos, scripts SQL y otros subtópicos.
+El manejo de plataformas de trabajo colaborativas como GitHub, que facilitaron el desarrollo en tiempo real por parte de todos los integrantes del equipo sin interrupciones.
+La comprensión del funcionamiento de plataformas que gestionan cantidades masivas de datos, y cómo pueden garantizar la seguridad del usuario pese a la colaboración simultánea, como en el caso de los árboles genealógicos compartidos.
+La implementación de parámetros de seguridad en la base de datos, como el uso obligatorio del certificado SSL de Microsoft para conexiones externas. Asimismo, se adquirió conocimiento sobre la configuración del firewall para permitir el acceso desde cualquier IP, siempre que se cuente con las credenciales correspondientes.

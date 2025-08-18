@@ -1,0 +1,14 @@
+########################################################################################################
+				  SBD PROJECT SERVER AND DATA
+########################################################################################################
+
+--------------------------------------------------------------------------------------------------------
+			    AZURE DATABASE FOR MYSQL FLEXIBLE SERVER
+--------------------------------------------------------------------------------------------------------
+Hostname:		sbd-project-g8.mysql.database.azure.com
+Server name:		sbd-project-g8
+Administrator login:	sbdadmin
+Password:		sbdProjectg8
+
+Access through CMD:
+mysql -h sbd-project-g8.mysql.database.azure.com -u sbdadmin -p --ssl-ca="C:\Users\joanm\OneDrive\Documents\DigiCertGlobalRootCA.crt.pem" --ssl-mode=REQUIRED

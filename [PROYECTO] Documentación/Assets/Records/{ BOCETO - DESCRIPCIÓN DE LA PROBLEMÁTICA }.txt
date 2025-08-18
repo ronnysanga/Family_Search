@@ -1,0 +1,34 @@
+--------------------------------------------------------------------------------------------------------
+		  	     DESCRIPCIÓN DEL PROYECTO Y SU DOMINIO
+			    		FAMILYTREE.ORG
+--------------------------------------------------------------------------------------------------------
+El proyecto se trabajó con base en la plataforma gratuita FamilySearch Website que es el árbol genealógico compartido online más grande del mundo. Dentro de este árbol se encuentra albergada la información de más de 1.2 billones de ancestros, gracias a la contribución de los millones de descendientes.
+A diferencia de otras experiencias o plataformas de creación de árboles familiares, el árbol unificado de FamilySearch se concentra mediante la construcción cooperativa, de un mismo árbol compartido el cual permita o ayude a los demás usuarios en el descubrimiento de sus ancestros o bien miembros familiares.
+Otra característica óptima que emplea este Website a diferencia de otros, es que el árbol compartido de FamilySearch busca tener un solo perfil público para cada persona fallecida que haya existida. De esta forma, los descendientes aportan lo que saben sobre una persona a un único perfil compartido, evitando la dispersión de los datos o conocimientos en múltiples perfiles de varios árboles. Por lo cual, la información de cuentas personales y cualquier detalle sobre personas vivas, se mantiene en privado. Únicamente las personas fallecidas tienen perfiles públicos.
+
+Su dominio está centrado en el ámbito de la genealogía digital y la preservación histórica de linajes familiares. Donde todos los usuarios colaboran para la edifición del árbol genealógico principal compartido. Asegurando a su vez la privacidad de los usuarios que aportan.
+
+Las reglas claves que presenta este dominio son las siguientes:
+	Regla de unicidad: solo debe existir un perfil público por cada persona fallecida (no duplicados).
+	Regla de privacidad: la información de personas vivas se mantiene privada.
+	Regla de colaboración: los descendientes deben aportar información a un perfil único compartido.
+	Integridad de datos: los nombres, fechas de nacimiento, defunción, relaciones familiares, etc., deben ser consistentes.
+
+--------------------------------------------------------------------------------------------------------
+						FIXED
+--------------------------------------------------------------------------------------------------------
+
+El proyecto se desarrolló con base en la plataforma gratuita FamilySearch Website, el árbol genealógico compartido en línea más grande del mundo. Dentro de este árbol se alberga información de más de 1.2 mil millones de ancestros, gracias a la contribución de millones de descendientes.
+
+A diferencia de otras experiencias o plataformas de creación de árboles familiares, el árbol unificado de FamilySearch se centra en la construcción cooperativa de un único árbol compartido, lo cual permite y facilita a los usuarios el descubrimiento de sus ancestros y demás miembros familiares.
+
+Otra característica destacable de este sitio web, en comparación con otros, es que el árbol compartido de FamilySearch busca tener un solo perfil público para cada persona fallecida que haya existido. De esta forma, los descendientes aportan lo que saben sobre una persona a un único perfil compartido, evitando la dispersión de datos o conocimientos en múltiples perfiles de distintos árboles. Por este motivo, la información de cuentas personales y cualquier detalle sobre personas vivas se mantiene en privado. Únicamente las personas fallecidas tienen perfiles públicos.
+
+Su dominio está centrado en el ámbito de la genealogía digital y la preservación histórica de linajes familiares, donde todos los usuarios colaboran en la construcción del árbol genealógico principal compartido, garantizando a su vez la privacidad de los usuarios que contribuyen.
+
+Las principales reglas que presenta este dominio son las siguientes:
+
+Regla de unicidad: solo debe existir un perfil público por cada persona fallecida (sin duplicados).
+Regla de privacidad: la información de personas vivas se mantiene privada.
+Regla de colaboración: los descendientes deben aportar información a un perfil único compartido.
+Integridad de datos: los nombres, fechas de nacimiento, defunción, relaciones familiares, etc., deben ser consistentes.
