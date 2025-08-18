@@ -12,14 +12,11 @@ def show_login_form() -> Optional[Dict[str, Any]]:
         clear_screen()
         show_header("Inicio de Sesión")
         
-        # Show remaining attempts
         if attempts > 0:
             show_message(f"Intento {attempts + 1} de {max_attempts}", "info")
         
-        # Get user input
         email = get_input("\nCorreo electrónico (o 'salir' para volver al menú principal): ").strip().lower()
-        
-        # Allow user to exit
+
         if email.lower() == 'salir':
             return None
             
@@ -37,11 +34,9 @@ def show_login_form() -> Optional[Dict[str, Any]]:
             attempts += 1
             continue
             
-        # Authenticate user
         user = authenticate_user(email, password)
         
         if user:
-            # Get person data if exists
             person = get_person_by_user_id(user['id_usuario'])
             if person:
                 user.update({
@@ -54,13 +49,11 @@ def show_login_form() -> Optional[Dict[str, Any]]:
             show_message(f"¡Bienvenido, {user['nombres']}!", "success")
             return user
             
-        # Authentication failed
         attempts += 1
         if attempts < max_attempts:
             show_message("\nCredenciales inválidas. Por favor intente nuevamente.", "error")
             input("Presione Enter para continuar...")
     
-    # Max attempts reached
     show_message("\nNúmero máximo de intentos alcanzado. Por favor intente más tarde.", "error")
     input("Presione Enter para volver al menú principal...")
     return None

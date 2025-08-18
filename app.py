@@ -8,65 +8,58 @@ from views.menus.show_logged_in_menu import show_logged_in_menu
 from views.person import show_profile, show_add_form, show_edit_form, show_search, select_person
 
 def handle_logged_in_choice(choice: str, user_id: int) -> str:
-    """Handle user's choice from the logged-in menu."""
-    if choice == '1':  # View profile
+    if choice == '1':  
         show_profile(user_id)
-    elif choice == '2':  # Search people
+    elif choice == '2':  
         show_search()
-    elif choice == '3':  # Add person
+    elif choice == '3': 
         show_add_form(user_id)
-    elif choice == '4':  # Edit person
+    elif choice == '4': 
         person = select_person("Seleccione la persona a editar")
         if person:
             show_edit_form(person, user_id)
-    elif choice == '5':  # Manage family relationships
+    elif choice == '5':  
         from views.family_tree.show_add_relationship import show_add_relationship
         show_add_relationship(user_id)
-    elif choice == '6':  # View family tree
+    elif choice == '6':  
         from views.family_tree.show_tree import show_family_tree
         show_family_tree(user_id)
-    elif choice == '7':  # Logout
+    elif choice == '7':  
         return 'logout'
         
     return ''
 
 def main():
     """Main function to start the application."""
-    # Check if .env file exists
     if not os.path.exists('.env'):
         print("Error: No se encontró el archivo .env")
         print("Por favor, cree un archivo .env basado en .env.example")
         return
     
-    # Load environment variables
     load_dotenv()
     
-    # Main application loop
     current_user = None
     
     while True:
         if current_user is None:
-            # Show main menu for non-authenticated users
             choice = show_main_menu()
             
-            if choice == '1':  # Login
+            if choice == '1':  
                 user = show_login_form()
                 if user:
                     current_user = user
                 
-            elif choice == '2':  # Register
+            elif choice == '2': 
                 show_register_form()
                 input("\nPresione Enter para continuar...")
                 
-            elif choice == '3':  # Exit
+            elif choice == '3':  
                 print("\n¡Hasta luego!")
                 sys.exit(0)
                 
         else:
-            # Show menu for authenticated users
             choice = show_logged_in_menu(current_user['id_usuario'])
-            
-            # Handle user's choice
+
             if choice == 'logout':
                 current_user = None
             else:

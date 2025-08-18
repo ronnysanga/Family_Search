@@ -14,8 +14,7 @@ def add_relationship(person1_id: int, person2_id: int, relationship_type: str, u
             return False
             
         cursor = conn.cursor()
-        
-        # Check if the relationship already exists
+
         cursor.execute(
             """
             SELECT id_relacion FROM relacion_familiar 
@@ -27,7 +26,6 @@ def add_relationship(person1_id: int, person2_id: int, relationship_type: str, u
             show_message("Esta relación ya existe.", "warning")
             return False
             
-        # Insert the relationship
         cursor.execute(
             """
             INSERT INTO relacion_familiar 

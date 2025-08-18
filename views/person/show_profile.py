@@ -12,7 +12,6 @@ def show_profile(user_id: int, person_id: Optional[int] = None) -> None:
     - Solo el creador del perfil (id_usuario_creador == user_id) puede editar.
     """
 
-    # Resolver a qué persona mostrar
     if person_id is None:
         person = get_person_by_user_id(user_id)
         if not person:
@@ -25,7 +24,6 @@ def show_profile(user_id: int, person_id: Optional[int] = None) -> None:
             show_message("Persona no encontrada.", "error")
             return
 
-    # Permisos de edición: el perfil fue creado por el usuario logueado
     puede_editar = str(person.get("id_usuario_creador")) == str(user_id)
 
     while True:
@@ -36,7 +34,6 @@ def show_profile(user_id: int, person_id: Optional[int] = None) -> None:
         print(f"Nombres: {person.get('nombres', '')}")
         print(f"Apellidos: {person.get('apellidos', '')}")
 
-        # Fechas: priorizar las formateadas si existen
         fnac = person.get("fecha_nac_formateada") or person.get("fecha_nacimiento")
         if fnac:
             print(f"Fecha de Nacimiento: {fnac}")
@@ -45,7 +42,6 @@ def show_profile(user_id: int, person_id: Optional[int] = None) -> None:
         if fdef:
             print(f"Fecha de Defunción: {fdef}")
 
-        # Sexo
         if person.get("sexo"):
             sexo_val = str(person["sexo"]).lower()
             if sexo_val in ("masculino", "m"):
@@ -55,7 +51,6 @@ def show_profile(user_id: int, person_id: Optional[int] = None) -> None:
             else:
                 print(f"Sexo: {person['sexo']}")
 
-        # Otros campos opcionales
         if person.get("lugar_nacimiento"):
             print(f"Lugar de Nacimiento: {person['lugar_nacimiento']}")
 
@@ -66,7 +61,6 @@ def show_profile(user_id: int, person_id: Optional[int] = None) -> None:
 
         print("\n" + "=" * 50)
 
-        # Menú
         print("\nOpciones:")
         if puede_editar:
             print("1. Editar perfil")
@@ -75,10 +69,8 @@ def show_profile(user_id: int, person_id: Optional[int] = None) -> None:
         choice = get_input("\nSeleccione una opción: ").strip()
 
         if choice == "1" and puede_editar:
-            # Import diferido para evitar ciclos
             from .edit_views import show_edit_person_form
             show_edit_person_form(person, user_id)
-            # Refrescar datos (y permisos) tras la edición
             person = get_person_by_id(person_id) or person
             puede_editar = str(person.get("id_usuario_creador")) == str(user_id)
 

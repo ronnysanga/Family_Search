@@ -18,7 +18,6 @@ def select_person(prompt: str = "Buscar persona") -> Optional[Dict[str, Any]]:
         if search_term.lower() == 'salir':
             return None
             
-        # Perform search
         results = search_people(search_term) if search_term else search_people("")
         
         if not results:
@@ -27,14 +26,12 @@ def select_person(prompt: str = "Buscar persona") -> Optional[Dict[str, Any]]:
             input("\nPresione ENTER para intentar de nuevo...")
             continue
             
-        # Display search results
         while True:
             clear_screen()
             show_header("Resultados de Búsqueda")
             print(f"Se encontraron {len(results)} personas:")
             print("-"*80)
-            
-            # Display results in a table
+
             print(f"{'#':<4} {'NOMBRES':<25} {'APELLIDOS':<25} {'NACIMIENTO':<12} {'SEXO':<6}")
             print("-"*80)
             
@@ -51,7 +48,6 @@ def select_person(prompt: str = "Buscar persona") -> Optional[Dict[str, Any]]:
                 
                 print(f"{i:<4} {nombres:<25} {apellidos:<25} {fecha_nac:<12} {sexo_display:<6}")
             
-            # Show options
             print("\n" + "-"*80)
             print("INSTRUCCIONES:")
             print(f"- Ingrese un número del 1 al {len(results)} para seleccionar una persona")
@@ -69,6 +65,5 @@ def select_person(prompt: str = "Buscar persona") -> Optional[Dict[str, Any]]:
                 if 0 <= index < len(results):
                     return results[index]
             
-            # Invalid option
             show_message("Opción no válida. Intente nuevamente.", "error")
             input("Presione ENTER para continuar...")

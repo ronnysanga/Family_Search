@@ -10,38 +10,30 @@ from faker.providers import company, profile
 import mysql.connector
 from dotenv import load_dotenv
 
-# Agregar el directorio raíz al path para poder importar database
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from database import create_connection, close_connection
 
-# Configuración de Faker
 fake = Faker('es_ES')
 fake.add_provider(company)
 fake.add_provider(profile)
 
-# Cargar variables de entorno
 load_dotenv()
 
 def crear_usuario_institucional(conn, cursor):
     """Crea un usuario institucional ficticio"""
-    # Lista de dominios institucionales
     dominios = [
         'gob.ec', 'registrocivil.gob.ec', 'msp.gob.ec', 'educacion.gob.ec',
         'university.edu.ec', 'hospital.com.ec', 'notaria.gov.ec', 'municipio.gob.ec'
     ]
     
-    # Generar datos del usuario
     nombre_institucion = fake.company()
     dominio = random.choice(dominios)
     
-    # Crear email institucional
     usuario_base = nombre_institucion.lower().replace(' ', '.')[:15]
     email = f"{usuario_base}@{dominio}"
     
-    # Generar contraseña simple para proyecto académico
-    password = "password123"  # Contraseña simple para facilitar pruebas
+    password = "password123"  
     
-    # Insertar usuario
     try:
         cursor.execute(
             """
@@ -58,7 +50,6 @@ def crear_usuario_institucional(conn, cursor):
         print(f"✅ Creado usuario institucional: {email} (ID: {user_id}, Contraseña: {password})")
         return user_id
     except mysql.connector.IntegrityError as e:
-        # Si el correo ya existe, obtener el ID existente
         if 'Duplicate entry' in str(e):
             cursor.execute("SELECT id_usuario FROM usuario WHERE email = %s", (email,))
             result = cursor.fetchone()

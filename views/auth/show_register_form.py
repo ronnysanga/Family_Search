@@ -18,7 +18,6 @@ def get_date_input(prompt: str, required: bool = True) -> Optional[str]:
             if not date_str and not required:
                 return None
                 
-            # Validate date format (YYYY-MM-DD)
             datetime.strptime(date_str, '%Y-%m-%d')
             return date_str
         except ValueError:
@@ -54,13 +53,11 @@ def show_register_form() -> Tuple[bool, str]:
         show_header("Registro de Nuevo Usuario")
         print("\nComplete sus datos personales:")
         
-        # Get basic person information
         person_data = {
             'nombres': get_input("Nombres: ", required=True).strip(),
             'apellidos': get_input("Apellidos: ", required=True).strip()
         }
         
-        # Optional fields
         fecha_nac = get_date_input("Fecha de nacimiento (YYYY-MM-DD, opcional): ", required=False)
         if fecha_nac:
             person_data['fecha_nacimiento'] = fecha_nac
@@ -73,10 +70,6 @@ def show_register_form() -> Tuple[bool, str]:
         if lugar_nac:
             person_data['lugar_nacimiento'] = lugar_nac
         
-        # No solicitamos la biografía durante el registro
-        # Se calculará posteriormente
-        
-        # Get user account information
         clear_screen()
         show_header("Creación de Cuenta")
         print("\nAhora cree sus credenciales de acceso:")
@@ -87,7 +80,6 @@ def show_register_form() -> Tuple[bool, str]:
             'apellidos': person_data['apellidos']
         }
         
-        # Get and validate password
         while True:
             password = get_input("Contraseña (mínimo 6 caracteres): ", password=True, required=True)
             password_error = validate_password(password)
@@ -104,7 +96,6 @@ def show_register_form() -> Tuple[bool, str]:
             user_data['password'] = password
             break
         
-        # Create user
         user_result = create_user(
             email=user_data['email'],
             password=user_data['password'],
@@ -115,11 +106,9 @@ def show_register_form() -> Tuple[bool, str]:
         if 'error' in user_result:
             return False, f"Error al crear el usuario: {user_result['error']}"
         
-        # Create person record
         person_id = add_person(person_data, user_result['user_id'])
         
         if not person_id:
-            # If person creation fails, we should handle this (e.g., delete the user)
             return False, "Error al crear el perfil de la persona. Por favor, contacte al administrador."
         
         clear_screen()

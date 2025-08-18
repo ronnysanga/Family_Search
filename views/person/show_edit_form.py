@@ -16,13 +16,11 @@ def get_sexo_display(sexo: Optional[str]) -> str:
         
     sexo = str(sexo).lower().strip()
     
-    # Handle all possible variations
     if sexo in ['m', 'masculino']:
         return 'Masculino'
     elif sexo in ['f', 'femenino']:
         return 'Femenino'
         
-    # If we get here, it's an unexpected value - try to make it presentable
     return sexo.capitalize()
 
 def show_edit_form(person: Dict[str, Any], user_id: int) -> bool:
@@ -33,7 +31,6 @@ def show_edit_form(person: Dict[str, Any], user_id: int) -> bool:
         clear_screen()
         show_header(f"EDITAR PERFIL DE {person['nombres'].upper()}")
         
-        # Show current values with numbers
         print("\nSeleccione una opción:")
         print(f" 1. Nombres: {updated_data.get('nombres', '')}")
         print(f" 2. Apellidos: {updated_data.get('apellidos', '')}")
@@ -43,18 +40,16 @@ def show_edit_form(person: Dict[str, Any], user_id: int) -> bool:
         print(f" 6. Lugar de Fallecimiento: {updated_data.get('lugar_defuncion', 'No especificado')}")
         print(f" 7. Sexo: {get_sexo_display(updated_data.get('sexo'))}")
         
-        # Exit option
         print("\n 0. Salir sin guardar cambios")
         
         field_choice = get_input("\nOpción (0-7): ").strip()
         
-        # Handle exit option
         if field_choice == '0':
             if changes_made and not get_yes_no_input("¿Está seguro que desea salir sin guardar los cambios? (s/n): "):
                 continue
             return False
         
-        if not field_choice:  # User pressed Enter to finish
+        if not field_choice:  
             if changes_made:
                 if confirm_changes(person, updated_data, user_id):
                     return True
@@ -62,7 +57,6 @@ def show_edit_form(person: Dict[str, Any], user_id: int) -> bool:
                 continue
             return False
             
-        # Map choice to field name and display name
         field_info = {
             '1': {'name': 'nombres', 'display': 'Nombres'},
             '2': {'name': 'apellidos', 'display': 'Apellidos'},
@@ -83,7 +77,6 @@ def show_edit_form(person: Dict[str, Any], user_id: int) -> bool:
         field_display = field_info[field_choice]['display']
         current_value = updated_data.get(field_name, '')
         
-        # Get new value
         if field_name == 'sexo':
             new_value = get_sexo_input(current_value)
         elif field_name == 'biografia':
@@ -93,19 +86,17 @@ def show_edit_form(person: Dict[str, Any], user_id: int) -> bool:
             prompt += "\nNuevo valor (presione ENTER para cancelar): "
             new_value = get_input(prompt).strip()
         
-        # Process the new value
         if new_value is not None and new_value != current_value:
             if confirm_field_change(field_display, current_value, new_value):
                 updated_data[field_name] = new_value
                 changes_made = True
                 show_message("✅ Cambio registrado.", "success")
             
-            # Ask if user wants to continue editing
             if not get_yes_no_input("\n¿Desea editar otro campo? (s/n): "):
                 if changes_made:
                     return confirm_changes(person, updated_data, user_id)
                 return False
-        elif new_value is not None:  # User didn't make changes
+        elif new_value is not None: 
             show_message("No se realizaron cambios.", "info")
             input("\nPresione ENTER para continuar...")
 
@@ -149,7 +140,7 @@ def get_biografia_input(current_value: str) -> str:
         while True:
             line = input()
             if not line and lines and not lines[-1]:
-                lines.pop()  # Remove the last empty line
+                lines.pop() 
                 break
             lines.append(line)
     except EOFError:
@@ -184,7 +175,6 @@ def confirm_changes(person: Dict[str, Any], updated_data: Dict[str, Any], user_i
                     'new': new_val if new_val else 'No especificado'
                 })
     
-    # Check biografia separately as it might be long
     if 'biografia' in updated_data and updated_data['biografia'] != person.get('biografia'):
         old_bio = person.get('biografia', '')
         new_bio = updated_data.get('biografia', '')
@@ -198,7 +188,6 @@ def confirm_changes(person: Dict[str, Any], updated_data: Dict[str, Any], user_i
         show_message("No se realizaron cambios.", "info")
         return False
     
-    # Display all changes
     print("\nResumen de cambios:")
     print("-" * 80)
     print(f"{'CAMPO':<25} | {'VALOR ANTERIOR':<25} | {'NUEVO VALOR'}")
@@ -210,7 +199,6 @@ def confirm_changes(person: Dict[str, Any], updated_data: Dict[str, Any], user_i
         show_message("❌ Cambios descartados.", "warning")
         return False
     
-    # Save changes
     success = edit_person(person['id_persona'], updated_data, user_id)
     if success:
         show_message("✅ Cambios guardados exitosamente.", "success")

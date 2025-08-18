@@ -14,7 +14,6 @@ def authenticate_user(email: str, password: str) -> Optional[Dict[str, Any]]:
         if not connection:
             return None
             
-        # Configurar el cursor para leer todos los resultados
         cursor = connection.cursor(dictionary=True, buffered=True)
         
         query = """
@@ -27,21 +26,17 @@ def authenticate_user(email: str, password: str) -> Optional[Dict[str, Any]]:
         """
         cursor.execute(query, (email,))
         
-        # Asegurarse de leer todos los resultados
         user = cursor.fetchone()
         
-        # Consumir cualquier resultado pendiente
         if cursor.with_rows:
             cursor.fetchall()
         
         if not user:
             return None
             
-        # Verificar contraseña
         if not verify_password(user.get('password', ''), password):
             return None
             
-        # Eliminar la contraseña antes de devolver
         if 'password' in user:
             del user['password']
             
@@ -52,7 +47,6 @@ def authenticate_user(email: str, password: str) -> Optional[Dict[str, Any]]:
         return None
         
     finally:
-        # Cerrar cursor y conexión de manera segura
         try:
             if cursor:
                 cursor.close()

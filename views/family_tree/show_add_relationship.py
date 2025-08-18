@@ -16,14 +16,12 @@ def show_add_relationship(user_id: int, person1_id: Optional[int] = None) -> Non
     clear_screen()
     print("\n=== AGREGAR RELACIÓN FAMILIAR ===\n")
     
-    # Seleccionar la primera persona si no se proporciona
     if not person1_id:
         person1 = select_person("Seleccione la primera persona")
         if not person1:
             return
         person1_id = person1['id_persona']
-    
-    # Seleccionar la segunda persona
+
     person2 = select_person("Seleccione la persona relacionada")
     if not person2:
         return
@@ -33,11 +31,9 @@ def show_add_relationship(user_id: int, person1_id: Optional[int] = None) -> Non
         input("\nPresione ENTER para continuar...")
         return
     
-    # Obtener géneros
     person1_gender = get_person_gender(person1_id)
     person2_gender = get_person_gender(person2['id_persona'])
-    
-    # Seleccionar el tipo de relación
+
     print("\nTipo de relación:")
     print("1. Padre/Madre")
     print("2. Hijo/Hija")
@@ -46,7 +42,6 @@ def show_add_relationship(user_id: int, person1_id: Optional[int] = None) -> Non
     
     rel_choice = get_input("\nSeleccione el tipo de relación (1-4): ")
     
-    # Mapear opción a tipo de relación
     rel_type_map = {
         '1': 'padre',
         '2': 'hijo',
@@ -60,7 +55,6 @@ def show_add_relationship(user_id: int, person1_id: Optional[int] = None) -> Non
     
     base_rel_type = rel_type_map[rel_choice]
     
-    # Determinar el tipo de relación basado en el género
     if base_rel_type == 'padre':
         rel_type = 'madre' if person1_gender == 'femenino' else 'padre'
     elif base_rel_type == 'hijo':
@@ -70,7 +64,6 @@ def show_add_relationship(user_id: int, person1_id: Optional[int] = None) -> Non
     elif base_rel_type == 'hermano':
         rel_type = 'hermana' if person1_gender == 'femenino' else 'hermano'
     
-    # Agregar la relación
     try:
         success = add_rel(
             person1_id=person1_id,
@@ -79,7 +72,6 @@ def show_add_relationship(user_id: int, person1_id: Optional[int] = None) -> Non
             user_id=user_id
         )
         
-        # Agregar relación inversa si es necesario
         if success and rel_type in ['padre', 'madre']:
             inverse_rel = 'hijo' if person2_gender == 'masculino' else 'hija'
             add_rel(

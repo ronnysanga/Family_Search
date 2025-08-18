@@ -11,10 +11,8 @@ def check_environment() -> Tuple[bool, str]:
     if not os.path.exists('.env'):
         return False, "Error: No se encontró el archivo .env"
     
-    # Load environment variables
     load_environment()
     
-    # Check required environment variables
     required_vars = ['DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME']
     missing_vars = [var for var in required_vars if not os.getenv(var)]
     

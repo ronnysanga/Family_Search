@@ -23,11 +23,10 @@ def register_user(user_data):
         connection.commit()
         user_id = cursor.lastrowid
         
-        # Crear automáticamente un perfil de persona para el usuario
         person_data = {
             'nombres': user_data['nombres'],
             'apellidos': user_data['apellidos'],
-            'sexo': user_data.get('sexo', 'masculino'),  # Usar el sexo proporcionado o 'masculino' por defecto
+            'sexo': user_data.get('sexo', 'masculino'),  
             'biografia': 'Perfil creado automáticamente al registrarse.'
         }
         

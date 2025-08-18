@@ -10,15 +10,12 @@ def create_user(email: str, password: str, nombres: str, apellidos: str) -> Dict
     try:
         cursor = connection.cursor(dictionary=True)
         
-        # Check if email already exists
         cursor.execute("SELECT id_usuario FROM usuario WHERE email = %s", (email,))
         if cursor.fetchone():
             return {'error': 'El correo electrónico ya está registrado'}
-        
-        # Hash the password
+
         hashed_password = hash_password(password)
         
-        # Insert new user
         query = """
         INSERT INTO usuario (email, password, nombres, apellidos, fecha_creacion_usuario)
         VALUES (%s, %s, %s, %s, NOW())

@@ -16,7 +16,6 @@ def show_search() -> None:
         if search_term.lower() == 'salir':
             return
             
-        # Perform search
         results = search_people(search_term) if search_term else search_people("")
         
         if not results:
@@ -25,7 +24,6 @@ def show_search() -> None:
             input("\nPresione ENTER para intentar de nuevo...")
             continue
             
-        # Display search results with pagination
         page = 0
         per_page = 10
         total_pages = (len(results) + per_page - 1) // per_page
@@ -36,7 +34,6 @@ def show_search() -> None:
             print(f"Mostrando {len(results)} resultados (página {page + 1} de {max(1, total_pages)}):")
             print("-"*80)
             
-            # Display current page of results
             start_idx = page * per_page
             end_idx = min(start_idx + per_page, len(results))
             
@@ -57,7 +54,6 @@ def show_search() -> None:
                 
                 print(f"{i+1:<4} {nombres:<25} {apellidos:<25} {fecha_nac:<12} {sexo_display:<6}")
             
-            # Show navigation options
             print("\n" + "-"*80)
             print("INSTRUCCIONES:")
             print(f"- Ingrese un número del 1 al {end_idx-start_idx} para seleccionar una persona")
@@ -73,7 +69,6 @@ def show_search() -> None:
             
             choice = input("\nSu elección: ").strip().lower()
             
-            # Handle navigation
             if choice == 'm':
                 return
             elif choice == 'b':
@@ -101,7 +96,6 @@ def _handle_person_selection(person: Dict[str, Any]) -> None:
         clear_screen()
         show_header(f"Perfil de {person['nombres']} {person['apellidos']}")
         
-        # Display basic info
         print(f"\nNombres: {person['nombres']}")
         print(f"Apellidos: {person['apellidos']}")
         

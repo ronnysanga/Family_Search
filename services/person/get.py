@@ -23,10 +23,8 @@ def _execute_single_query(query: str, params: tuple = None) -> Optional[Dict[str
         cursor = connection.cursor(dictionary=True, buffered=True)
         cursor.execute(query, params or ())
         
-        # Obtener el resultado
         result = cursor.fetchone()
         
-        # Consumir cualquier resultado pendiente
         if cursor.with_rows:
             cursor.fetchall()
             
@@ -37,7 +35,6 @@ def _execute_single_query(query: str, params: tuple = None) -> Optional[Dict[str
         return None
         
     finally:
-        # Cerrar cursor y conexión de manera segura
         try:
             if cursor:
                 cursor.close()

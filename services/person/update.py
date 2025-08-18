@@ -10,7 +10,6 @@ def edit_person(person_id, person_data, user_id):
     try:
         cursor = connection.cursor()
         
-        # Primero, verificar si la persona existe y el usuario tiene permisos
         cursor.execute(
             "SELECT id_persona FROM persona WHERE id_persona = %s AND id_usuario_creador = %s",
             (person_id, user_id)
@@ -19,7 +18,6 @@ def edit_person(person_id, person_data, user_id):
             show_message("No tiene permisos para editar esta persona o la persona no existe.", "error")
             return False
         
-        # Construir la consulta de actualización dinámicamente
         update_fields = []
         params = []
         
@@ -43,14 +41,11 @@ def edit_person(person_id, person_data, user_id):
             update_fields.append("lugar_nacimiento = %s")
             params.append(person_data['lugar_nacimiento'])
         
-        # Si no hay campos para actualizar, retornar True
         if not update_fields:
             return True
             
-        # Agregar el ID al final de los parámetros para la cláusula WHERE
         params.append(person_id)
         
-        # Construir y ejecutar la consulta
         update_query = f"""
         UPDATE persona 
         SET {', '.join(update_fields)}

@@ -23,10 +23,8 @@ def _execute_query(query: str, params: tuple = None) -> List[Dict[str, Any]]:
         cursor = connection.cursor(dictionary=True, buffered=True)
         cursor.execute(query, params or ())
         
-        # Obtener resultados
         results = cursor.fetchall()
         
-        # Consumir cualquier resultado pendiente
         if cursor.with_rows:
             cursor.fetchall()
             
@@ -37,7 +35,6 @@ def _execute_query(query: str, params: tuple = None) -> List[Dict[str, Any]]:
         return []
         
     finally:
-        # Cerrar cursor y conexión de manera segura
         try:
             if cursor:
                 cursor.close()

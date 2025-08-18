@@ -14,8 +14,7 @@ def get_parents(person_id: int) -> List[Dict]:
         
     try:
         cursor = conn.cursor(dictionary=True)
-        
-        # Buscar padres (donde la persona es el hijo)
+
         cursor.execute("""
             SELECT p.id_persona, p.nombres, p.apellidos, rf.tipo_relacion
             FROM relacion_familiar rf
@@ -44,11 +43,9 @@ def show_ancestors(person_id: int, level: int = 1) -> None:
         return
         
     for parent in parents:
-        # Mostrar el ancestro con la indentación adecuada
         indent = '  ' * level
         print(f"{indent}└── {parent['nombres']} {parent['apellidos']}")
         
-        # Mostrar ancestros del padre/madre (llamada recursiva)
         show_ancestors(parent['id_persona'], level + 1)
 
 def show_person_tree(person_id: int, is_current_user: bool = False) -> None:
@@ -58,17 +55,14 @@ def show_person_tree(person_id: int, is_current_user: bool = False) -> None:
     clear_screen()
     show_header("ÁRBOL GENEALÓGICO")
     
-    # Obtener la persona principal
     person = get_person_by_id(person_id)
     if not person:
         show_message("No se encontró la persona seleccionada.", "error")
         return
     
-    # Mostrar la persona principal
     relation_note = " (Tú)" if is_current_user else ""
     print(f"\n{person['nombres']} {person['apellidos']}{relation_note}")
-    
-    # Mostrar ancestros recursivamente
+
     show_ancestors(person_id)
 
 def show_family_tree(user_id: int) -> None:
@@ -87,12 +81,12 @@ def show_family_tree(user_id: int) -> None:
         choice = input("\nSeleccione una opción: ").strip()
         
         if choice == '1':
-            # Mostrar árbol del usuario actual
+
             show_person_tree(user_id, is_current_user=True)
             input("\nPresione ENTER para continuar...")
             
         elif choice == '2':
-            # Buscar persona
+
             person = select_person("Seleccione una persona para ver su árbol")
             if person:
                 show_person_tree(person['id_persona'])
@@ -117,14 +111,14 @@ def get_family_members(person_id: int) -> Dict[str, List[Dict]]:
     }
     
     try:
-        # Obtener relaciones donde la persona es person1 (relaciones salientes)
+
         relationships = get_relationships(person_id)
         
         for rel in relationships:
             if not rel or 'id_pariente' not in rel:
                 continue
                 
-            # Crear un diccionario con la información del familiar
+
             relative = {
                 'id_persona': rel['id_pariente'],
                 'nombres': rel.get('nombre_pariente', 'Sin nombre').split()[0],
@@ -132,7 +126,7 @@ def get_family_members(person_id: int) -> Dict[str, List[Dict]]:
                 'tipo_relacion': rel.get('tipo_relacion', '')
             }
             
-            # Clasificar por tipo de relación
+
             rel_type = rel.get('tipo_relacion', '')
             if rel_type in ['padre', 'madre']:
                 family['padres'].append(relative)
@@ -142,10 +136,6 @@ def get_family_members(person_id: int) -> Dict[str, List[Dict]]:
                 family['conyuges'].append(relative)
             elif rel_type in ['hermano', 'hermana']:
                 family['hermanos'].append(relative)
-        
-        # Para relaciones donde la persona es person2 (relaciones entrantes)
-        # Necesitaríamos una función get_relationships_where_person2
-        # Por ahora, manejamos las relaciones inversas en la lógica de agregar relaciones
         
         return family
         

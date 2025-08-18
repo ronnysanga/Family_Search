@@ -7,12 +7,10 @@ import mysql.connector
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 
-# Agregar el directorio raíz al path para poder importar módulos
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from database import create_connection, close_connection
 from utils.poblar_usuarios import poblar_usuarios_institucionales
 
-# Configuración de Faker
 fake = Faker('es_ES')
 fake.add_provider(lorem)
 fake.add_provider(file)
@@ -20,7 +18,6 @@ fake.add_provider(person)
 fake.add_provider(company)
 fake.add_provider(profile)
 
-# Cargar variables de entorno
 load_dotenv()
 
 def obtener_usuarios(cursor):
@@ -40,10 +37,8 @@ def generar_registro_historico(id_usuario=None):
     tipos_documento = ['acta_nacimiento', 'acta_matrimonio', 'acta_defuncion', 'titulo_academico', 'otra']
     fuentes = ['Registro Civil', 'Notaría', 'Universidad', 'Ministerio de Salud', 'Archivo Nacional', None]
     
-    # Generar fechas aleatorias en los últimos 5 años
     fecha_subida = fake.date_time_between(start_date='-5y', end_date='now')
     
-    # Generar datos ficticios
     registro = {
         'descripcion': fake.paragraph(nb_sentences=3),
         'tipo_documento': random.choice(tipos_documento),
@@ -53,7 +48,6 @@ def generar_registro_historico(id_usuario=None):
         'fuente_validadora': random.choice(fuentes)
     }
     
-    # Ajustar la descripción según el tipo de documento
     if registro['tipo_documento'] == 'acta_nacimiento':
         registro['descripcion'] = f"Acta de nacimiento de {fake.name()}, emitida en {fake.city()}"
     elif registro['tipo_documento'] == 'acta_matrimonio':
@@ -77,7 +71,6 @@ def insertar_registros_historicos(cantidad=10):
     try:
         cursor = conn.cursor()
         
-        # Asegurar que existan usuarios institucionales
         print("\n🔍 Verificando usuarios existentes...")
         usuarios = obtener_usuarios(cursor)
         
@@ -87,7 +80,6 @@ def insertar_registros_historicos(cantidad=10):
                 print("❌ No se pudieron crear usuarios institucionales")
                 return False
             
-            # Obtener los usuarios recién creados
             usuarios = obtener_usuarios(cursor)
         
         print(f"✅ Usuarios disponibles: {len(usuarios)}")
@@ -96,15 +88,11 @@ def insertar_registros_historicos(cantidad=10):
             print("❌ No hay usuarios disponibles para asignar a los registros")
             return False
     
-        # Insertar registros
         for i in range(cantidad):
-            # Seleccionar un usuario aleatorio (siempre debe haber al menos uno)
             id_usuario = random.choice(usuarios)
             
-            # Generar registro histórico
             registro = generar_registro_historico(id_usuario)
             
-            # Insertar en la base de datos
             query = """
             INSERT INTO registro_historico 
             (descripcion, tipo_documento, url_documento, id_usuario_subida, fecha_subida, fuente_validadora)
@@ -120,7 +108,6 @@ def insertar_registros_historicos(cantidad=10):
                 registro['fuente_validadora']
             ))
             
-            # Mostrar progreso cada 10 registros
             if (i + 1) % 10 == 0:
                 print(f"Progreso: {i + 1}/{cantidad} registros creados")
         

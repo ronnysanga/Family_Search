@@ -7,20 +7,16 @@ def show_add_person_form(user_id):
     
     print("\nComplete los datos de la persona. Los campos marcados con * son obligatorios.")
     
-    # Campos obligatorios
     person_data = {}
     
-    # Solo usar get_input para campos requeridos
     person_data['nombres'] = get_input("* Nombres: ", required=True).strip()
     person_data['apellidos'] = get_input("* Apellidos: ", required=True).strip()
     
-    # Campos opcionales
     print("\n  Fecha de nacimiento (opcional - presione ENTER para omitir): ", end='')
     fecha_nac = input().strip()
     if fecha_nac:
         person_data['fecha_nacimiento'] = fecha_nac
     
-    # Manejo del campo sexo
     print("\n  Sexo (opcional):")
     print("  1. Masculino")
     print("  2. Femenino")
@@ -49,7 +45,6 @@ def show_add_person_form(user_id):
     if biografia:
         person_data['biografia'] = biografia
     
-    # Mostrar confirmación
     clear_screen()
     show_header("Confirmar Datos")
     

@@ -42,14 +42,12 @@ def search_and_select_person(prompt="Buscar persona"):
             input("Presione Enter para continuar...")
             continue
             
-        # Mostrar resultados
         clear_screen()
         show_header(f"Resultados de búsqueda ({len(results)})")
         for i, person in enumerate(results, 1):
             birth_info = f" | Nacimiento: {person['fecha_nacimiento'].strftime('%d/%m/%Y')}" if person.get('fecha_nacimiento') else ""
             print(f"{i}. {person['apellidos']}, {person['nombres']}{birth_info}")
             
-        # Permitir al usuario seleccionar una persona
         while True:
             try:
                 selection = input("\nSeleccione un número (o 0 para buscar de nuevo): ").strip()

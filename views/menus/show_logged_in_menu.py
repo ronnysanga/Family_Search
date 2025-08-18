@@ -16,13 +16,12 @@ def show_logged_in_menu(user_id: int) -> str:
         clear_screen()
         show_header("Menú Principal")
         
-        # Display menu options
         for key, option in menu_options.items():
             print(f"{key}. {option}")
             
         choice = get_input("\nSeleccione una opción: ").strip()
         
-        if choice == '7':  # Logout
+        if choice == '7': 
             confirm = input("\n¿Está seguro que desea cerrar sesión? (s/n): ").strip().lower()
             if confirm == 's':
                 show_message("Sesión cerrada exitosamente.", "success")

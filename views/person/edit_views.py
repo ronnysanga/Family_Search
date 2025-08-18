@@ -4,7 +4,7 @@ from .search_views import search_and_select_person
 
 def show_edit_person_form(user_id):
     """Muestra el formulario para editar una persona existente."""
-    # Buscar persona a editar
+
     person = search_and_select_person("Buscar persona a editar")
     if not person:
         return
@@ -13,7 +13,6 @@ def show_edit_person_form(user_id):
         clear_screen()
         show_header(f"Editando: {person['nombres']} {person['apellidos']}")
         
-        # Mostrar información actual
         print("\nInformación actual:")
         print(f"1. Nombres: {person.get('nombres', 'No especificado')}")
         print(f"2. Apellidos: {person.get('apellidos', 'No especificado')}")
@@ -79,9 +78,7 @@ def show_edit_person_form(user_id):
         else:
             show_message("Opción no válida. Intente nuevamente.", "error")
             
-        # Actualizar la persona en la base de datos
         if edit_person(person['id_persona'], person, user_id):
-            # Actualizar los datos locales con los cambios guardados
             updated_person = search_people(f"id:{person['id_persona']}")
             if updated_person:
                 person.update(updated_person[0])

@@ -11,7 +11,6 @@ def show_register_form():
         'email': get_input("Email: ").lower(),
     }
     
-    # Pedir el sexo con validación
     print("\nOpciones de sexo:")
     print("1. Masculino")
     print("2. Femenino")
