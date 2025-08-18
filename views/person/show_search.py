@@ -1,0 +1,118 @@
+from typing import List, Dict, Any, Optional
+from utils.console_utils import show_header, show_message, get_input, clear_screen
+from services.person.search import search_people
+
+def show_search() -> None:
+    while True:
+        clear_screen()
+        show_header("Búsqueda de Personas")
+        
+        print("\nIngrese el nombre, apellido o parte de estos.")
+        print("Presione ENTER sin escribir para ver todas las personas.")
+        print("Escriba 'salir' para volver al menú principal.")
+        
+        search_term = input("\n🔍 Búsqueda: ").strip()
+        
+        if search_term.lower() == 'salir':
+            return
+            
+        results = search_people(search_term) if search_term else search_people("")
+        
+        if not results:
+            print("\n" + "-"*50)
+            print("No se encontraron personas que coincidan con la búsqueda.")
+            input("\nPresione ENTER para intentar de nuevo...")
+            continue
+            
+        page = 0
+        per_page = 10
+        total_pages = (len(results) + per_page - 1) // per_page
+        
+        while True:
+            clear_screen()
+            show_header("Resultados de Búsqueda")
+            print(f"Mostrando {len(results)} resultados (página {page + 1} de {max(1, total_pages)}):")
+            print("-"*80)
+            
+            start_idx = page * per_page
+            end_idx = min(start_idx + per_page, len(results))
+            
+            print(f"{'#':<4} {'NOMBRES':<25} {'APELLIDOS':<25} {'NACIMIENTO':<12} {'SEXO':<6}")
+            print("-"*80)
+            
+            for i in range(start_idx, end_idx):
+                person = results[i]
+                nombres = person.get('nombres', '')[:20]
+                apellidos = person.get('apellidos', '')[:20]
+                fecha_nac = str(person.get('fecha_nacimiento', ''))[:10]
+                sexo = person.get('sexo', '').lower()
+                sexo_display = ''
+                if sexo == 'masculino' or sexo == 'm':
+                    sexo_display = 'M'
+                elif sexo == 'femenino' or sexo == 'f':
+                    sexo_display = 'F'
+                
+                print(f"{i+1:<4} {nombres:<25} {apellidos:<25} {fecha_nac:<12} {sexo_display:<6}")
+            
+            print("\n" + "-"*80)
+            print("INSTRUCCIONES:")
+            print(f"- Ingrese un número del 1 al {end_idx-start_idx} para seleccionar una persona")
+            
+            if total_pages > 1:
+                if page > 0:
+                    print("- 'a' para página anterior")
+                if page < total_pages - 1:
+                    print("- 's' para página siguiente")
+            
+            print("- 'b' para buscar de nuevo")
+            print("- 'm' para volver al menú principal")
+            
+            choice = input("\nSu elección: ").strip().lower()
+            
+            if choice == 'm':
+                return
+            elif choice == 'b':
+                break
+            elif choice == 'a' and page > 0:
+                page -= 1
+            elif choice == 's' and page < total_pages - 1:
+                page += 1
+            elif choice.isdigit():
+                idx = int(choice) - 1 + start_idx
+                if 0 <= idx < len(results):
+                    _handle_person_selection(results[idx])
+            else:
+                show_message("Opción no válida. Intente nuevamente.", "error")
+                input("Presione ENTER para continuar...")
+
+def _handle_person_selection(person: Dict[str, Any]) -> None:
+    """
+    Handle actions after selecting a person from search results.
+    
+    Args:
+        person: Dictionary containing the selected person's data
+    """
+    while True:
+        clear_screen()
+        show_header(f"Perfil de {person['nombres']} {person['apellidos']}")
+        
+        print(f"\nNombres: {person['nombres']}")
+        print(f"Apellidos: {person['apellidos']}")
+        
+        if 'fecha_nacimiento' in person and person['fecha_nacimiento']:
+            print(f"Fecha de Nacimiento: {person['fecha_nacimiento']}")
+            
+        print("\nOpciones:")
+        print("1. Ver perfil completo")
+        print("2. Volver a resultados")
+        
+        choice = input("\nSeleccione una opción: ").strip()
+        
+        if choice == '1':
+            from ..person import show_profile
+            show_profile(None, person['id_persona'])
+        elif choice == '2':
+            break
+        else:
+            show_message("Opción no válida. Intente nuevamente.", "error")
+            input("Presione ENTER para continuar...")
