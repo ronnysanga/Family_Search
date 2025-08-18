@@ -19,7 +19,13 @@ def handle_logged_in_choice(choice: str, user_id: int) -> str:
         person = select_person("Seleccione la persona a editar")
         if person:
             show_edit_form(person, user_id)
-    elif choice == '5':  # Logout
+    elif choice == '5':  # Manage family relationships
+        from views.family_tree.show_add_relationship import show_add_relationship
+        show_add_relationship(user_id)
+    elif choice == '6':  # View family tree
+        from views.family_tree.show_tree import show_family_tree
+        show_family_tree(user_id)
+    elif choice == '7':  # Logout
         return 'logout'
         
     return ''
