@@ -1,6 +1,7 @@
-from typing import Dict, List, Tuple
-from utils.console_utils import clear_screen, show_message
-from services.person.get import get_person_by_user_id
+from typing import Dict, List, Optional
+from utils.console_utils import clear_screen, show_message, show_header
+from services.person.get import get_person_by_user_id, get_person_by_id
+from views.person.select_person import select_person
 from database import create_connection, close_connection
 
 def get_parents(person_id: int) -> List[Dict]:
@@ -33,29 +34,28 @@ def get_parents(person_id: int) -> List[Dict]:
             cursor.close()
         close_connection(conn)
 
-def show_family_tree(user_id: int) -> None:
+def show_person_tree(person_id: int, is_current_user: bool = False) -> None:
     """
-    Muestra el árbol genealógico ascendente del usuario.
+    Muestra el árbol genealógico de una persona específica.
     """
     clear_screen()
-    print("\n=== ÁRBOL GENEALÓGICO ===\n")
+    show_header("ÁRBOL GENEALÓGICO")
     
-    # Obtener la persona principal (usuario actual)
-    person = get_person_by_user_id(user_id)
+    # Obtener la persona principal
+    person = get_person_by_id(person_id)
     if not person:
-        show_message("No se encontró su perfil de persona.", "error")
-        input("\nPresione ENTER para continuar...")
+        show_message("No se encontró la persona seleccionada.", "error")
         return
     
     # Mostrar la persona principal
-    print(f"\n{person['nombres']} {person['apellidos']} (Tú)")
+    relation_note = " (Tú)" if is_current_user else ""
+    print(f"\n{person['nombres']} {person['apellidos']}{relation_note}")
     
     # Obtener y mostrar padres
-    parents = get_parents(person['id_persona'])
+    parents = get_parents(person_id)
     
     if not parents:
         print("\nNo se encontraron padres registrados.")
-        print("Puede agregar padres/madres desde la opción 'Gestionar relaciones familiares'.")
     else:
         print("\nPadres:")
         for parent in parents:
@@ -69,8 +69,39 @@ def show_family_tree(user_id: int) -> None:
                 for grandparent in grandparents:
                     relation = 'Abuelo' if grandparent['tipo_relacion'] == 'padre' else 'Abuela'
                     print(f"  - {grandparent['nombres']} {grandparent['apellidos']} ({relation})")
-    
-    input("\nPresione ENTER para volver al menú principal...")
+
+def show_family_tree(user_id: int) -> None:
+    """
+    Muestra el menú del árbol genealógico con opción de buscar personas.
+    """
+    while True:
+        clear_screen()
+        show_header("ÁRBOL GENEALÓGICO")
+        
+        print("\nOpciones:")
+        print("1. Ver mi árbol genealógico")
+        print("2. Buscar persona")
+        print("3. Volver al menú principal")
+        
+        choice = input("\nSeleccione una opción: ").strip()
+        
+        if choice == '1':
+            # Mostrar árbol del usuario actual
+            show_person_tree(user_id, is_current_user=True)
+            input("\nPresione ENTER para continuar...")
+            
+        elif choice == '2':
+            # Buscar persona
+            person = select_person("Seleccione una persona para ver su árbol")
+            if person:
+                show_person_tree(person['id_persona'])
+                input("\nPresione ENTER para continuar...")
+                
+        elif choice == '3':
+            return
+            
+        else:
+            show_message("Opción no válida. Intente nuevamente.", "error")
 
 def get_family_members(person_id: int) -> Dict[str, List[Dict]]:
     """
