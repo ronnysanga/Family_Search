@@ -1,74 +1,91 @@
-from typing import Optional, Dict, Any
+from typing import Optional
 from utils.console_utils import show_header, show_message, get_input, clear_screen
-from services.person import get_person_by_id
+from services.person import get_person_by_id, get_person_by_user_id
+
 
 def show_profile(user_id: int, person_id: Optional[int] = None) -> None:
     """
-    Display a person's profile with their details and options to edit or view family tree.
-    
-    Args:
-        user_id: ID of the currently logged-in user
-        person_id: Optional ID of the person to display (defaults to user's own profile)
+    Muestra el perfil de una persona y permite (si corresponde) editarlo.
+
+    Reglas:
+    - Si no se pasa person_id, se busca la persona vinculada al user_id (id_usuario_creador).
+    - Solo el creador del perfil (id_usuario_creador == user_id) puede editar.
     """
-    if not person_id:
-        person_id = user_id
-    
-    person = get_person_by_id(person_id)
-    if not person:
-        show_message("Persona no encontrada.", "error")
-        return
-    
+
+    # Resolver a qué persona mostrar
+    if person_id is None:
+        person = get_person_by_user_id(user_id)
+        if not person:
+            show_message("No hay una persona vinculada a este usuario.", "error")
+            return
+        person_id = person.get("id_persona")
+    else:
+        person = get_person_by_id(person_id)
+        if not person:
+            show_message("Persona no encontrada.", "error")
+            return
+
+    # Permisos de edición: el perfil fue creado por el usuario logueado
+    puede_editar = str(person.get("id_usuario_creador")) == str(user_id)
+
     while True:
         clear_screen()
-        show_header(f"Perfil de {person['nombres']} {person['apellidos']}")
-        
-        # Display person details
-        print("\n" + "="*50)
-        print(f"Nombres: {person['nombres']}")
-        print(f"Apellidos: {person['apellidos']}")
-        
-        if 'fecha_nacimiento' in person and person['fecha_nacimiento']:
-            print(f"Fecha de Nacimiento: {person['fecha_nacimiento']}")
-        
-        if 'sexo' in person and person['sexo']:
-            # The database only allows 'masculino' or 'femenino', but we'll handle any case
-            sexo = person['sexo'].lower()
-            if sexo in ['masculino', 'm']:
+        show_header(f"Perfil de {person.get('nombres', '')} {person.get('apellidos', '')}")
+
+        print("\n" + "=" * 50)
+        print(f"Nombres: {person.get('nombres', '')}")
+        print(f"Apellidos: {person.get('apellidos', '')}")
+
+        # Fechas: priorizar las formateadas si existen
+        fnac = person.get("fecha_nac_formateada") or person.get("fecha_nacimiento")
+        if fnac:
+            print(f"Fecha de Nacimiento: {fnac}")
+
+        fdef = person.get("fecha_def_formateada") or person.get("fecha_defuncion")
+        if fdef:
+            print(f"Fecha de Defunción: {fdef}")
+
+        # Sexo
+        if person.get("sexo"):
+            sexo_val = str(person["sexo"]).lower()
+            if sexo_val in ("masculino", "m"):
                 print("Sexo: Masculino")
-            elif sexo in ['femenino', 'f']:
+            elif sexo_val in ("femenino", "f"):
                 print("Sexo: Femenino")
             else:
-                # Fallback in case an unexpected value is in the database
                 print(f"Sexo: {person['sexo']}")
-            
-        if 'lugar_nacimiento' in person and person['lugar_nacimiento']:
+
+        # Otros campos opcionales
+        if person.get("lugar_nacimiento"):
             print(f"Lugar de Nacimiento: {person['lugar_nacimiento']}")
-            
-        if 'biografia' in person and person['biografia']:
+
+        if person.get("biografia"):
             print("\nBiografía:")
-            print("-"*50)
-            print(person['biografia'])
-            
-        print("\n" + "="*50)
-        
-        # Show menu options
+            print("-" * 50)
+            print(person["biografia"])
+
+        print("\n" + "=" * 50)
+
+        # Menú
         print("\nOpciones:")
-        if str(person_id) == str(user_id):
+        if puede_editar:
             print("1. Editar perfil")
         print("2. Volver al menú principal")
-        
-        choice = get_input("\nSeleccione una opción: ")
-        
-        if choice == '1' and str(person_id) == str(user_id):
+
+        choice = get_input("\nSeleccione una opción: ").strip()
+
+        if choice == "1" and puede_editar:
+            # Import diferido para evitar ciclos
             from .edit_views import show_edit_person_form
             show_edit_person_form(person, user_id)
-            # Refresh person data after editing
-            person = get_person_by_id(person_id)
-        elif choice == '2':
-            break
-            input("\nPresione ENTER para volver al perfil...")
-        elif choice == '4':
+            # Refrescar datos (y permisos) tras la edición
+            person = get_person_by_id(person_id) or person
+            puede_editar = str(person.get("id_usuario_creador")) == str(user_id)
+
+        elif choice == "2":
+            input("\nPresione ENTER para volver al menú principal...")
             return
+
         else:
             show_message("Opción no válida. Intente nuevamente.", "error")
             input("Presione ENTER para continuar...")
